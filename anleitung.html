@@ -1,0 +1,478 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anleitung - 3D-Print Master</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333333;
+      --accent-color: #007bff;
+      --button-bg: #007bff;
+      --button-text: #ffffff;
+      --tab-bg: #e0e0e0;
+      --tab-active-bg: #ffffff;
+    }
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent-color: #66b0ff;
+      --button-bg: #66b0ff;
+      --button-text: #000000;
+      --tab-bg: #333333;
+      --tab-active-bg: #4a4a4a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--tab-bg);
+    }
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .hamburger-content {
+      display: none;
+      position: absolute;
+      top: 50px;
+      left: 20px;
+      background-color: var(--tab-active-bg);
+      border: 1px solid var(--text-color);
+      padding: 10px;
+      z-index: 1000;
+    }
+    .hamburger-content span {
+      display: block;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    .hamburger-content span:hover {
+      background-color: var(--accent-color);
+      color: var(--button-text);
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: var(--tab-active-bg);
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 1.4em;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 1.2em;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 1.1em;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    ul, ol {
+      font-size: 1.1em;
+      line-height: 1.5;
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .back-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+    }
+    .back-button:hover {
+      background-color: var(--accent-color);
+      filter: brightness(1.2);
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      h2 {
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1.1em;
+      }
+      p, ul, ol {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body data-theme="system">
+  <div class="header">
+    <div class="hamburger">☰</div>
+    <div class="hamburger-content">
+      <span>Design</span>
+      <span class="theme-option" data-theme="light">Hell</span>
+      <span class="theme-option" data-theme="dark">Dunkel</span>
+      <span class="theme-option" data-theme="system">System</span>
+      <span><a href="index.html">Zurück zum Kostenrechner</a></span>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Bedienungsanleitung für 3D-Print Master</h1>
+
+    <h2>Einführung</h2>
+    <p>3D-Print Master ist eine Webanwendung, die dir hilft, die Kosten für 3D-Druckprojekte zu berechnen. Sie ermöglicht es dir, Drucker, Filamente, Modelle, Stundensätze und Strompreise zu verwalten, und berechnet basierend auf diesen Daten die Gesamtkosten eines Druckprojekts, einschließlich Abschreibungen, Stromkosten, Filamentkosten, Arbeitskosten und einem Fehldruckaufschlag. Die Anwendung speichert deine Daten lokal im Browser und erlaubt es dir, sie zu exportieren oder wieder zu importieren.</p>
+
+    <h2>Übersicht der Benutzeroberfläche</h2>
+    <p>Die Anwendung ist in mehrere Seiten unterteilt, die über ein Burger-Menü (☰-Symbol oben links) zugänglich sind:</p>
+    <ol>
+      <li><strong>Hauptseite (Kostenrechner):</strong> Hier gibst du die Parameter für ein Druckprojekt ein und berechnest die Kosten.</li>
+      <li><strong>Drucker verwalten:</strong> Füge Drucker hinzu, bearbeite sie oder lösche sie.</li>
+      <li><strong>Filamente verwalten:</strong> Verwalte Filamente (Materialien), die für den Druck verwendet werden.</li>
+      <li><strong>Modelle verwalten:</strong> Definiere 3D-Modelle mit Druckzeiten, Filamentverbrauch und weiteren Parametern.</li>
+      <li><strong>Stundensätze verwalten:</strong> Verwalte Stundensätze für Arbeitskosten (z. B. Vorbereitung, Nachbearbeitung, Design).</li>
+      <li><strong>Strompreise verwalten:</strong> Verwalte Strompreise für die Berechnung der Energiekosten.</li>
+    </ol>
+
+    <h2>Burger-Menü</h2>
+    <ul>
+      <li><strong>Themenwahl:</strong> Wähle zwischen "Hell", "Dunkel" oder "System" (passt sich den Systemeinstellungen an).</li>
+      <li><strong>Daten speichern:</strong> Exportiert alle Daten (Drucker, Filamente, Modelle, Stundensätze, Strompreise) als JSON-Datei mit einem Zeitstempel im Format <code>3D_Print_Master_Data_DD_MM_YYYY_HH_MM.json</code>.</li>
+      <li><strong>Daten laden:</strong> Importiert eine zuvor exportierte JSON-Datei. Achtung: Dies überschreibt alle aktuellen Daten, und du wirst vor dem Laden um Bestätigung gebeten.</li>
+    </ul>
+
+    <h2>Schritt-für-Schritt-Anleitung</h2>
+
+    <h3>1. Drucker verwalten</h3>
+    <p>Gehe zu "Drucker verwalten", um 3D Drucker hinzuzufügen, die für deine Projekte verwendet werden.</p>
+    <h4>Parameter eines Druckers</h4>
+    <ul>
+      <li><strong>Name:</strong> Der Name des Druckers (z. B. "Ender 3").</li>
+      <li><strong>Preis (€):</strong> Anschaffungskosten des Druckers (z. B. 200 €). Muss ≥ 0 sein.</li>
+      <li><strong>Lebensdauer (Stunden):</strong> Geschätzte Lebensdauer des Druckers in Stunden (z. B. 5000 Stunden). Muss > 0 sein.</li>
+      <li><strong>Stromaufnahme (kW):</strong> Durchschnittliche Stromaufnahme des Druckers in Kilowatt (z. B. 0,3 kW). Muss zwischen 0,01 und 2 kW liegen.</li>
+      <li><strong>Multicolor-Druck:</strong> Aktiviere diese Option, wenn der Drucker mehrere Farben gleichzeitig drucken kann.
+        <ul>
+          <li><strong>Anzahl Farben:</strong> Gib die Anzahl der unterstützten Farben an (z. B. 4), wenn Multicolor aktiviert ist.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Hinzufügen:</strong> Fülle die Felder aus und klicke auf "Hinzufügen", um den Drucker zu speichern.</li>
+      <li><strong>Bearbeiten:</strong> Klicke auf "Bearbeiten" neben einem Drucker, ändere die Daten und klicke auf "Speichern".</li>
+      <li><strong>Löschen:</strong> Klicke auf "Löschen", um einen Drucker zu entfernen.</li>
+    </ul>
+
+    <h3>2. Filamente verwalten</h3>
+    <p>Gehe zu "Filamente verwalten", um Materialien hinzuzufügen, die für den Druck verwendet werden.</p>
+    <h4>Parameter eines Filaments</h4>
+    <ul>
+      <li><strong>Name:</strong> Name des Filaments (z. B. "PLA Blau").</li>
+      <li><strong>Farbe:</strong> Wähle die Farbe des Filaments (z. B. Blau).</li>
+      <li><strong>Metallisch:</strong> Wähle, ob das Filament metallisch aussieht ("Silber", "Gold" oder "Keine").</li>
+      <li><strong>Glanz:</strong> Wähle, ob das Filament matt oder glänzend ist.</li>
+      <li><strong>Preis (€/kg):</strong> Preis pro Kilogramm des Filaments (z. B. 20 €/kg). Muss ≥ 0 sein.</li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Hinzufügen:</strong> Fülle die Felder aus und klicke auf "Hinzufügen".</li>
+      <li><strong>Bearbeiten:</strong> Klicke auf "Bearbeiten", ändere die Daten und klicke auf "Speichern".</li>
+      <li><strong>Löschen:</strong> Klicke auf "Löschen", um ein Filament zu entfernen.</li>
+    </ul>
+
+    <h3>3. Modelle verwalten</h3>
+    <p>Gehe zu "Modelle verwalten", um 3D-Modelle zu definieren, die du drucken möchtest.</p>
+    <h4>Parameter eines Modells</h4>
+    <ul>
+      <li><strong>Name:</strong> Name des Modells (z. B. "Schachfigur").</li>
+      <li><strong>Druckzeit (HH:MM):</strong> Zeit, die der Drucker benötigt, um das Modell zu drucken (z. B. 02:30). Muss > 0 sein.</li>
+      <li><strong>Vorbereitungszeit (HH:MM):</strong> Zeit für Vorbereitung (z. B. Einrichten des Druckers, 00:15). Kann 0 sein.</li>
+      <li><strong>Nachbearbeitungszeit (HH:MM):</strong> Zeit für Nachbearbeitung (z. B. Entfernen von Stützstrukturen, 00:10). Kann 0 sein.</li>
+      <li><strong>Designzeit (HH:MM):</strong> Zeit, die für das Design des Modells aufgewendet wurde (z. B. 05:00). Kann 0 sein.</li>
+      <li><strong>Anzahl Verkäufe:</strong> Anzahl der Einheiten, die du voraussichtlich verkaufen wirst (z. B. 10). Muss ≥ 1 sein. Die Designzeit wird durch diese Anzahl geteilt, um die Designkosten pro Einheit zu berechnen.</li>
+      <li><strong>Multicolor-Druck:</strong> Aktiviere diese Option, wenn das Modell mehrere Farben benötigt.
+        <ul>
+          <li><strong>Anzahl Farben:</strong> Gib die Anzahl der Farben an, wenn Multicolor aktiviert ist.</li>
+          <li><strong>Filament pro Farbe:</strong> Wähle ein Filament und gib den Verbrauch in Gramm an (z. B. 50 g).</li>
+        </ul>
+      </li>
+      <li><strong>Einzelfarben-Druck (wenn Multicolor deaktiviert ist):</strong>
+        <ul>
+          <li><strong>Filament:</strong> Wähle ein Filament aus.</li>
+          <li><strong>Filamentverbrauch (Gramm):</strong> Gib den Verbrauch in Gramm an (z. B. 100 g). Muss > 0 sein.</li>
+        </ul>
+      </li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Hinzufügen:</strong> Fülle die Felder aus und klicke auf "Hinzufügen".</li>
+      <li><strong>Bearbeiten:</strong> Klicke auf "Bearbeiten", ändere die Daten und klicke auf "Speichern".</li>
+      <li><strong>Löschen:</strong> Klicke auf "Löschen", um ein Modell zu entfernen.</li>
+    </ul>
+
+    <h3>4. Stundensätze verwalten</h3>
+    <p>Gehe zu "Stundensätze verwalten", um Stundensätze für Arbeitskosten zu definieren.</p>
+    <h4>Parameter eines Stundensatzes</h4>
+    <ul>
+      <li><strong>Name:</strong> Name des Stundensatzes (z. B. "Standardrate").</li>
+      <li><strong>Stundensatz (€/h):</strong> Kosten pro Stunde (z. B. 30 €/h). Muss ≥ 0 sein.</li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Hinzufügen:</strong> Fülle die Felder aus und klicke auf "Hinzufügen".</li>
+      <li><strong>Bearbeiten:</strong> Klicke auf "Bearbeiten", ändere die Daten und klicke auf "Speichern".</li>
+      <li><strong>Löschen:</strong> Klicke auf "Löschen", um einen Stundensatz zu entfernen.</li>
+    </ul>
+
+    <h3>5. Strompreise verwalten</h3>
+    <p>Gehe zu "Strompreise verwalten", um Strompreise für die Energiekosten zu definieren.</p>
+    <h4>Parameter eines Strompreises</h4>
+    <ul>
+      <li><strong>Name:</strong> Name des Strompreises (z. B. "Haushaltsstrom").</li>
+      <li><strong>Preis (€/kWh):</strong> Preis pro Kilowattstunde (z. B. 0,30 €/kWh). Muss zwischen 0,01 und 1 €/kWh liegen.</li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Hinzufügen:</strong> Fülle die Felder aus und klicke auf "Hinzufügen".</li>
+      <li><strong>Bearbeiten:</strong> Klicke auf "Bearbeiten", ändere die Daten und klicke auf "Speichern".</li>
+      <li><strong>Löschen:</strong> Klicke auf "Löschen", um einen Strompreis zu entfernen.</li>
+    </ul>
+
+    <h3>6. Kosten berechnen (Hauptseite)</h3>
+    <p>Gehe zur Hauptseite, um die Kosten für ein Druckprojekt zu berechnen.</p>
+    <h4>Parameter für die Berechnung</h4>
+    <ul>
+      <li><strong>Modell:</strong> Wähle ein Modell aus (optional). Wenn ein Modell ausgewählt wird, werden die Felder für Druckzeit, Filamentverbrauch, Vorbereitungszeit, Nachbearbeitungszeit und Designzeit automatisch ausgefüllt. Du kannst die Werte manuell anpassen.</li>
+      <li><strong>Drucker:</strong> Wähle einen Drucker aus. Pflichtfeld.
+        <ul>
+          <li><strong>Warnung bei Multicolor:</strong> Wenn das Modell Multicolor ist, aber der Drucker dies nicht unterstützt oder nicht genug Farben hat, erscheint eine Warnung.</li>
+        </ul>
+      </li>
+      <li><strong>Druckzeit (HH:MM):</strong> Zeit, die der Drucker benötigt (z. B. 02:30). Muss > 0 sein.</li>
+      <li><strong>Filamentverbrauch:</strong>
+        <ul>
+          <li><strong>Einzelfarben-Druck:</strong> Wähle ein Filament und gib den Verbrauch in Gramm an (z. B. 100 g). Muss > 0 sein.</li>
+          <li><strong>Multicolor-Druck (wenn das Modell Multicolor ist):</strong> Gib für jede Farbe ein Filament und den Verbrauch an.</li>
+        </ul>
+      </li>
+      <li><strong>Vorbereitungszeit (HH:MM):</strong> Zeit für Vorbereitung (z. B. 00:15). Kann 0 sein.</li>
+      <li><strong>Nachbearbeitungszeit (HH:MM):</strong> Zeit für Nachbearbeitung (z. B. 00:10). Kann 0 sein.</li>
+      <li><strong>Designzeit (HH:MM):</strong> Designzeit pro Einheit (z. B. 00:30). Kann 0 sein.</li>
+      <li><strong>Stundensatz:</strong> Wähle einen Stundensatz aus oder gib einen Wert manuell ein (z. B. 30 €/h). Kann 0 sein.</li>
+      <li><strong>Strompreis:</strong> Wähle einen Strompreis aus oder gib einen Wert manuell ein (z. B. 0,30 €/kWh). Kann 0 sein.</li>
+      <li><strong>Fehldruckrate (%):</strong> Prozentsatz, der für Fehldrucke auf die Gesamtkosten aufgeschlagen wird (z. B. 10 %). Standardwert: 10 %. Kann 0 sein.</li>
+    </ul>
+    <h4>Aktionen</h4>
+    <ul>
+      <li><strong>Berechnen:</strong> Klicke auf "Berechnen", um die Kosten zu ermitteln.</li>
+      <li><strong>Zurücksetzen:</strong> Klicke auf "Zurücksetzen", um das Formular zu leeren.</li>
+    </ul>
+    <h4>Ergebnisse</h4>
+    <p>Nach dem Klicken auf "Berechnen" werden die Kosten aufgeschlüsselt angezeigt:</p>
+    <ul>
+      <li><strong>Abschreibung:</strong> Kosten für die Abschreibung des Druckers.</li>
+      <li><strong>Stromkosten:</strong> Energiekosten für den Druck.</li>
+      <li><strong>Filamentkosten:</strong> Kosten für das verwendete Filament.</li>
+      <li><strong>Arbeitskosten:</strong> Kosten für Vorbereitung, Nachbearbeitung und Design.</li>
+      <li><strong>Fehldruckaufschlag:</strong> Aufschlag für Fehldrucke.</li>
+      <li><strong>Gesamtkosten:</strong> Summe aller Kosten.</li>
+    </ul>
+
+    <h2>Erklärung der Berechnungen</h2>
+    <p>Die Gesamtkosten eines Druckprojekts werden wie folgt berechnet:</p>
+
+    <h3>1. Abschreibungskosten</h3>
+    <p>Die Abschreibungskosten des Druckers werden basierend auf seiner Lebensdauer berechnet:</p>
+    <p>Abschreibungskosten = (Druckerpreis (€) / Lebensdauer (Stunden)) × Druckzeit (Stunden)</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Druckerpreis: 200 €, Lebensdauer: 5000 Stunden, Druckzeit: 2,5 Stunden</li>
+      <li>Abschreibungskosten = (200 / 5000) × 2,5 = 0,04 × 2,5 = 0,10 €</li>
+    </ul>
+
+    <h3>2. Stromkosten</h3>
+    <p>Die Stromkosten basieren auf der Stromaufnahme des Druckers und dem Strompreis:</p>
+    <p>Stromkosten = Stromaufnahme (kW) × Druckzeit (Stunden) × Strompreis (€/kWh)</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Stromaufnahme: 0,3 kW, Druckzeit: 2,5 Stunden, Strompreis: 0,30 €/kWh</li>
+      <li>Stromkosten = 0,3 × 2,5 × 0,30 = 0,225 €</li>
+    </ul>
+
+    <h3>3. Filamentkosten</h3>
+    <p>Die Filamentkosten hängen vom Verbrauch und dem Preis des Filaments ab:</p>
+    <p>Filamentkosten = (Filamentverbrauch (Gramm) / 1000) × Filamentpreis (€/kg)</p>
+    <p>Für Multicolor-Modelle wird dies für jedes Filament berechnet und summiert.</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Filamentverbrauch: 100 g, Filamentpreis: 20 €/kg</li>
+      <li>Filamentkosten = (100 / 1000) × 20 = 0,1 × 20 = 2,00 €</li>
+    </ul>
+
+    <h3>4. Arbeitskosten</h3>
+    <p>Die Arbeitskosten umfassen Vorbereitung, Nachbearbeitung und Design:</p>
+    <p>Arbeitskosten = (Vorbereitungszeit (Stunden) + Nachbearbeitungszeit (Stunden) + Designzeit (Stunden)) × Stundensatz (€/h)</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Vorbereitungszeit: 0,25 Stunden, Nachbearbeitungszeit: 0,1667 Stunden (10 Minuten), Designzeit: 0,5 Stunden, Stundensatz: 30 €/h</li>
+      <li>Arbeitskosten = (0,25 + 0,1667 + 0,5) × 30 = 0,9167 × 30 = 27,50 €</li>
+    </ul>
+
+    <h3>5. Fehldruckaufschlag</h3>
+    <p>Der Fehldruckaufschlag wird auf die Zwischensumme (ohne Fehldruckaufschlag) angewendet:</p>
+    <p>Zwischensumme = Abschreibungskosten + Stromkosten + Filamentkosten + Arbeitskosten</p>
+    <p>Fehldruckaufschlag = Zwischensumme × (Fehldruckrate (%) / 100)</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Zwischensumme: 29,825 € (0,10 + 0,225 + 2,00 + 27,50), Fehldruckrate: 10 %</li>
+      <li>Fehldruckaufschlag = 29,825 × (10 / 100) = 2,9825 €</li>
+    </ul>
+
+    <h3>6. Gesamtkosten</h3>
+    <p>Die Gesamtkosten sind die Summe aller Kosten:</p>
+    <p>Gesamtkosten = Zwischensumme + Fehldruckaufschlag</p>
+    <p><strong>Beispiel:</strong></p>
+    <ul>
+      <li>Zwischensumme: 29,825 €, Fehldruckaufschlag: 2,9825 €</li>
+      <li>Gesamtkosten = 29,825 + 2,9825 = 32,8075 ≈ 32,81 €</li>
+    </ul>
+
+    <h2>Daten speichern und laden</h2>
+
+    <h3>Daten speichern</h3>
+    <ol>
+      <li>Öffne das Burger-Menü und klicke auf "Daten speichern".</li>
+      <li>Eine JSON-Datei mit dem Namen <code>3D_Print_Master_Data_DD_MM_YYYY_HH_MM.json</code> wird heruntergeladen.</li>
+      <li>Speichere die Datei an einem sicheren Ort, um deine Daten zu sichern.</li>
+    </ol>
+
+    <h3>Daten laden</h3>
+    <ol>
+      <li>Öffne das Burger-Menü und wähle "Daten laden".</li>
+      <li>Wähle eine zuvor gespeicherte JSON-Datei aus.</li>
+      <li><strong>Bestätigung:</strong> Du wirst gefragt: "Achtung: Das Laden einer Datei wird alle aktuellen Daten überschreiben. Möchten Sie fortfahren?"
+        <ul>
+          <li>Klicke "OK", um fortzufahren, oder "Abbrechen", um abzubrechen.</li>
+        </ul>
+      </li>
+      <li>Nach dem Laden erscheint die Meldung "Daten erfolgreich geladen!", und die Listen werden aktualisiert.</li>
+    </ol>
+
+    <h2>Tipps</h2>
+    <ul>
+      <li><strong>Sicherung:</strong> Speichere regelmäßig deine Daten, um sie nicht zu verlieren.</li>
+      <li><strong>Modelle verwenden:</strong> Nutze die Modellverwaltung, um häufig gedruckte Modelle zu speichern und Zeit bei der Eingabe zu sparen.</li>
+      <li><strong>Multicolor-Kompatibilität:</strong> Stelle sicher, dass dein Drucker die Anforderungen eines Multicolor-Modells erfüllt, um Warnungen zu vermeiden.</li>
+      <li><strong>Fehldruckrate anpassen:</strong> Passe die Fehldruckrate an deine Erfahrungswerte an, um realistischere Kosten zu erhalten.</li>
+    </ul>
+
+    <h2>Fehlerbehebung</h2>
+    <ul>
+      <li><strong>Warnung bei Multicolor:</strong> Überprüfe, ob der Drucker Multicolor unterstützt und genug Farben hat.</li>
+      <li><strong>Fehler beim Laden:</strong> Stelle sicher, dass die JSON-Datei das korrekte Format hat (z. B. eine zuvor exportierte Datei).</li>
+      <li><strong>Ungültige Eingaben:</strong> Achte auf die Eingabebeschränkungen (z. B. Druckzeit > 0, Stromaufnahme zwischen 0,01 und 2 kW).</li>
+    </ul>
+
+    <a href="index.html" class="back-button">Zurück zum Kostenrechner</a>
+  </div>
+
+  <script>
+    // Hamburger-Menü
+    const hamburger = document.querySelector('.hamburger');
+    const hamburgerContent = document.querySelector('.hamburger-content');
+    hamburger.addEventListener('click', () => {
+      hamburgerContent.style.display = hamburgerContent.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !hamburgerContent.contains(e.target)) {
+        hamburgerContent.style.display = 'none';
+      }
+    });
+
+    // Theme-Umschaltung
+    const setTheme = () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme') || 'system';
+      document.body.setAttribute('data-theme', savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme);
+    };
+    setTheme();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setTheme);
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const theme = option.getAttribute('data-theme');
+        localStorage.setItem('theme', theme);
+        setTheme();
+      });
+    });
+  </script>
+</body>
+</html>
