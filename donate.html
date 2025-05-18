@@ -1,0 +1,239 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spendiere einen Kaffee - 3D-Print Master</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333333;
+      --accent-color: #007bff;
+      --button-bg: #007bff;
+      --button-text: #ffffff;
+      --tab-bg: #e0e0e0;
+      --tab-active-bg: #ffffff;
+    }
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent-color: #66b0ff;
+      --button-bg: #66b0ff;
+      --button-text: #000000;
+      --tab-bg: #333333;
+      --tab-active-bg: #4a4a4a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--tab-bg);
+    }
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .hamburger-content {
+      display: none;
+      position: absolute;
+      top: 50px;
+      left: 20px;
+      background-color: var(--tab-active-bg);
+      border: 1px solid var(--text-color);
+      padding: 10px;
+      z-index: 1000;
+    }
+    .hamburger-content span {
+      display: block;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    .hamburger-content span:hover {
+      background-color: var(--accent-color);
+      color: var(--button-text);
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      text-align: center;
+      background-color: var(--tab-active-bg);
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.1em;
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+    .donate-options {
+      margin: 20px 0;
+    }
+    .donate-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      margin-bottom: 20px;
+    }
+    .donate-button:hover {
+      background-color: var(--accent-color);
+      filter: brightness(1.2);
+    }
+    .qr-code {
+      max-width: 200px;
+      height: auto;
+      margin: 10px auto;
+      display: block;
+    }
+    .qr-label {
+      font-size: 0.9em;
+      color: var(--text-color);
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+    .back-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .back-button:hover {
+      background-color: var(--accent-color);
+      filter: brightness(1.2);
+    }
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      p {
+        font-size: 1em;
+      }
+      .qr-code {
+        max-width: 150px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="system">
+  <div class="header">
+    <div class="hamburger">☰</div>
+    <div class="hamburger-content">
+      <span>Design</span>
+      <span class="theme-option" data-theme="light">Hell</span>
+      <span class="theme-option" data-theme="dark">Dunkel</span>
+      <span class="theme-option" data-theme="system">System</span>
+      <span><a href="3D-Print Master - by SpackenJaeger.html">Zurück zum Kostenrechner</a></span>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Spendiere mir einen Kaffee!</h1>
+    <p>Vielen Dank, dass du den 3D-Print Master nutzt! Deine Unterstützung hilft mir, die Seite weiterzuentwickeln, neue Funktionen hinzuzufügen und die Serverkosten zu decken. Ein virtueller Kaffee wäre großartig!</p>
+    
+    <div class="donate-options">
+      <a href="https://www.paypal.com/donate/?hosted_button_id=GSTMKWFFR5NCL" target="_blank" class="donate-button">Jetzt spenden!</a>
+      <img src="qr-code.png" alt="QR-Code zum Spenden" class="qr-code">
+      <p class="qr-label">Scanne den QR-Code mit deinem Smartphone, um zu spenden.</p>
+    </div>
+    
+    <a href="3D-Print Master - by SpackenJaeger.html" class="back-button">Zurück zum Kostenrechner</a>
+  </div>
+
+  <script>
+    // Hamburger-Menü
+    const hamburger = document.querySelector('.hamburger');
+    const hamburgerContent = document.querySelector('.hamburger-content');
+    hamburger.addEventListener('click', () => {
+      hamburgerContent.style.display = hamburgerContent.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !hamburgerContent.contains(e.target)) {
+        hamburgerContent.style.display = 'none';
+      }
+    });
+
+    // Theme-Umschaltung
+    const setTheme = () => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme') || 'system';
+      document.body.setAttribute('data-theme', savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme);
+    };
+    setTheme();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setTheme);
+    document.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', () => {
+        const theme = option.getAttribute('data-theme');
+        localStorage.setItem('theme', theme);
+        setTheme();
+      });
+    });
+  </script>
+</body>
+</html>
