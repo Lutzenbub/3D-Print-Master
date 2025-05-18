@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
@@ -122,6 +83,11 @@
     }
     .donate-options {
       margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      align-items: center;
     }
     .donate-button {
       display: inline-block;
@@ -164,6 +130,52 @@
       background-color: var(--accent-color);
       filter: brightness(1.2);
     }
+    .coffee-link {
+      display: inline-block;
+      position: relative;
+    }
+    .coffee-container {
+      position: relative;
+      display: inline-block;
+    }
+    .coffee-img {
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+    .coffee-link:hover .coffee-img {
+      transform: scale(1.05);
+    }
+    .steam {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 20px;
+      height: 40px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, transparent 80%);
+      opacity: 0;
+      transform: translateX(-50%) scaleY(0.5);
+      animation: steam-rise 2s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes steam-rise {
+      0% {
+        transform: translateX(-50%) translateY(10px) scaleY(0.5);
+        opacity: 0;
+      }
+      30% {
+        opacity: 0.4;
+      }
+      60% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translateX(-50%) translateY(-40px) scaleY(1);
+        opacity: 0;
+      }
+    }
     @media (max-width: 600px) {
       .container {
         margin: 10px;
@@ -192,33 +204,30 @@
       <span><a href="3D-Print Master - by SpackenJaeger.html">Zurück zum Kostenrechner</a></span>
     </div>
   </div>
-
   <div class="container">
     <h1>Spend a Coffee!</h1>
-    <p> Vielen Dank, dass du den 3D-Print Master nutzt! <br>
-        Der erste Druckkosten-Rechner mit Multicolor Unterstzützung, ganz ohne AMS 😄<br>
-        Deine Unterstützung hilft mir, dass Projekt weiterzuentwickeln, neue Funktionen hinzuzufügen und die Kosten zu decken. <br>
-        Ein virtueller Kaffee wäre also wirklich großartig!</p>
-    
-    <div class="donate-options" style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; align-items: center;">
-  <!-- Linker Bereich: Spendenbutton & QR -->
-  <div style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-    <a href="https://www.paypal.com/donate/?hosted_button_id=GSTMKWFFR5NCL" target="_blank" class="donate-button">Jetzt spenden!</a>
-    <img src="QR-Code.png" alt="QR-Code zum Spenden" class="qr-code">
-    <p class="qr-label">Scanne den QR-Code mit deinem Smartphone, um zu spenden.</p>
-  </div>
-
-  <!-- Rechter Bereich: Kaffeetasse -->
-  <div style="display: flex; align-items: center; justify-content: center;">
-    <img src="coffee.png" alt="coffee" 
-         style="max-height: 180px; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.5);">
-  </div>
-    
+    <p>Vielen Dank, dass du den 3D-Print Master nutzt! <br>
+      Der erste Druckkosten-Rechner mit Multicolor Unterstützung, ganz ohne AMS 😄<br>
+      Deine Unterstützung hilft mir, das Projekt weiterzuentwickeln, neue Funktionen hinzuzufügen und die Kosten zu decken.<br>
+      Ein virtueller Kaffee wäre also wirklich großartig!</p>
+    <div class="donate-options">
+      <div style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+        <a href="https://www.paypal.com/donate/?hosted_button_id=GSTMKWFFR5NCL" target="_blank" class="donate-button">Jetzt spenden!</a>
+        <img src="QR-Code.png" alt="QR-Code zum Spenden" class="qr-code">
+        <p class="qr-label">Scanne den QR-Code mit deinem Smartphone, um zu spenden.</p>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <a href="https://www.paypal.com/donate/?hosted_button_id=GSTMKWFFR5NCL" target="_blank" title="Klick für Koffein!" class="coffee-link">
+          <div class="coffee-container">
+            <img src="2574a38c-775b-442a-9b68-a81bdc07e721.png" alt="Kaffee-Bild" class="coffee-img">
+            <div class="steam"></div>
+          </div>
+        </a>
+      </div>
+    </div>
     <a href="3D-Print Master - by SpackenJaeger.html" class="back-button">Zurück zum Kostenrechner</a>
   </div>
-
   <script>
-    // Hamburger-Menü
     const hamburger = document.querySelector('.hamburger');
     const hamburgerContent = document.querySelector('.hamburger-content');
     hamburger.addEventListener('click', () => {
@@ -229,8 +238,6 @@
         hamburgerContent.style.display = 'none';
       }
     });
-
-    // Theme-Umschaltung
     const setTheme = () => {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const savedTheme = localStorage.getItem('theme') || 'system';
