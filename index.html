@@ -1,370 +1,50 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="de">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>3D-Print Master - by SpackenJaeger</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <!-- Favicon -->
-      <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
-      <style>
-         .time-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 1000; }
-         .time-picker-content { background: white; padding: 20px; border-radius: 8px; width: 300px; text-align: center; }
-         .burger-menu { display: none; position: absolute; top: 50px; left: 10px; background: white; border: 1px solid #ccc; border-radius: 4px; padding: 10px; z-index: 1000; }
-         .burger-menu.open { display: block; }
-         .color-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 4px; }
-         .error-border { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
-         .searchable-select-container { position: relative; cursor: pointer; }
-         .searchable-select-display { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem; background-color: white; display: flex; justify-content: space-between; align-items: center; }
-         .searchable-select-display::after { content: '▼'; font-size: 0.6em; margin-left: 8px; }
-         .searchable-select-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #d1d5db; border-top: none; border-radius: 0 0 0.25rem 0.25rem; z-index: 1010; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-         .searchable-select-container.open .searchable-select-dropdown { display: block; }
-         .searchable-select-search { width: 100%; padding: 0.5rem; border: none; border-bottom: 1px solid #d1d5db; outline: none; }
-         .searchable-select-options { list-style: none; margin: 0; padding: 0; }
-         .searchable-select-options li { padding: 0.5rem; }
-         .searchable-select-options li:hover, .searchable-select-options li.highlighted { background-color: #e0e0e0; }
-         .searchable-select-options li.hidden { display: none; }
-         [data-theme="dark"] { background-color: #1f2937; color: #e5e7eb; }
-         [data-theme="dark"] .bg-white { background-color: #374151; }
-         [data-theme="dark"] .text-black { color: #e5e7eb; }
-         [data-theme="dark"] .bg-gray-100 { background-color: #111827; }
-         [data-theme="dark"] .bg-gray-200 { background-color: #4b5563; }
-         [data-theme="dark"] .bg-gray-800 { background-color: #1f2937; }
-         [data-theme="dark"] .border, [data-theme="dark"] .border-gray-300 { border-color: #6b7280; }
-         [data-theme="dark"] .bg-blue-500 { background-color: #2563eb; }
-         [data-theme="dark"] .bg-blue-500:hover { background-color: #1d4ed8; }
-         [data-theme="dark"] .bg-red-500 { background-color: #dc2626; }
-         [data-theme="dark"] .bg-red-500:hover { background-color: #b91c1c; }
-         [data-theme="dark"] .bg-gray-500 { background-color: #6b7280; }
-         [data-theme="dark"] .bg-gray-500:hover { background-color: #4b5563; }
-         [data-theme="dark"] .bg-green-500 { background-color: #10b981; }
-         [data-theme="dark"] .bg-green-500:hover { background-color: #059669; }
-         [data-theme="dark"] .time-picker-content { background: #374151; color: #e5e7eb; }
-         [data-theme="dark"] .burger-menu { background: #374151; border-color: #6b7280; color: #e5e7eb; }
-         [data-theme="dark"] .burger-menu select, [data-theme="dark"] .burger-menu input { background: #4b5563; color: #e5e7eb; border-color: #6b7280; }
-         [data-theme="dark"] nav a { color: #e5e7eb; }
-         [data-theme="dark"] nav a:hover { color: #93c5fd; }
-         [data-theme="dark"] input, [data-theme="dark"] select { background: #4b5563; color: #e5e7eb; border-color: #6b7280; }
-         [data-theme="dark"] input:focus, [data-theme="dark"] select:focus { border-color: #2563eb; outline: none; }
-         [data-theme="dark"] .error-border { border-color: #ef4444 !important; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
-         .sparkle { position: relative; z-index: 10; }
-         .glitter { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient( 120deg, rgba(34, 211, 238, 0) 0%, rgba(34, 211, 238, 0.4) 50%, rgba(34, 211, 238, 0) 100% ); transform: skewX(-20deg); animation: sparkleMove 3s infinite ease-in-out; pointer-events: none; border-radius: 0.5rem; }
-         @keyframes sparkleMove { 0% { left: -100%; opacity: 0; } 10% { left: -60%; opacity: 1; } 50% { left: 100%; opacity: 1; } 80% { left: 120%; opacity: 0; } 100% { left: 120%; opacity: 0; } }
-         [data-theme="dark"] .searchable-select-display { background-color: #4b5563; border-color: #6b7280; }
-         [data-theme="dark"] .searchable-select-dropdown { background-color: #374151; border-color: #6b7280; }
-         [data-theme="dark"] .searchable-select-search { background-color: #4b5563; color: #e5e7eb; border-color: #6b7280; }
-         [data-theme="dark"] .searchable-select-options li:hover,
-         [data-theme="dark"] .searchable-select-options li.highlighted { background-color: #4b5563; }
-      </style>
-   </head>
-   <body class="bg-gray-100">
-      <div id="app" class="max-w-4xl mx-auto p-4">
-         <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center justify-start">
-               <div class="relative w-[48px] h-[48px] sm:w-[60px] sm:h-[60px] rounded-lg overflow-hidden mr-4">
-                  <img src="3D_Print_Master_Logo.png" alt="3D Print Master Logo" class="w-full h-full rounded-lg border-4 border-cyan-400 shadow-[0_0_10px_2px_rgba(34,211,238,0.8)]"> 
-                  <div class="glitter"></div>
-               </div>
-               <h1 class="text-3xl font-bold">3D-Print Master - by SpackenJaeger</h1>
-            </div>
-            <div id="language-switcher" class="relative">
-               <select id="language-select" class="border p-2 rounded bg-white dark:bg-gray-800 dark:text-white">
-                  <option value="de">🇩🇪 Deutsch</option>
-                  <option value="en">🇬🇧 English</option>
-               </select>
-            </div>
-         </div>
-         <div class="relative">
-            <button id="burger-btn" class="text-2xl p-2">☰</button> 
-            <div id="burger-menu" class="burger-menu">
-               <label class="block font-semibold mb-2" data-translate="theme_label">Design</label> 
-               <select id="theme-select" class="border p-2 w-full rounded mb-2">
-                  <option value="light" data-translate="theme_light">Hell</option>
-                  <option value="dark" data-translate="theme_dark">Dunkel</option>
-                  <option value="system" data-translate="theme_system">System</option>
-               </select>
-               <button id="save-data-btn" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full mb-2" data-translate="save_data_button">Daten speichern</button> <label class="block font-semibold mb-2" data-translate="load_data_label">Daten laden</label> <input type="file" id="load-data-input" accept=".json" class="border p-2 w-full rounded" />
-               <nav class="mt-4">
-                  <ul class="space-y-2">
-                     <li><a href="#calculator" class="block hover:underline" onclick="showPage('calculator', event)" data-translate="nav_calculator">Kostenrechner</a></li>
-                     <li><a href="#printers" class="block hover:underline" onclick="showPage('printers', event)" data-translate="nav_printers">Drucker</a></li>
-                     <li><a href="#filaments" class="block hover:underline" onclick="showPage('filaments', event)" data-translate="nav_filaments">Filamente</a></li>
-                     <li><a href="#models" class="block hover:underline" onclick="showPage('models', event)" data-translate="nav_models">Modelle</a></li>
-                     <li><a href="#hourly-rates" class="block hover:underline" onclick="showPage('hourly-rates', event)" data-translate="nav_hourly_rates">Stundensätze</a></li>
-                     <li><a href="#electricity-prices" class="block hover:underline" onclick="showPage('electricity-prices', event)" data-translate="nav_electricity_prices">Stromkosten</a></li>
-                     <li><a href="anleitungDE.html" data-translate-href="nav_manual_link" data-translate="nav_manual">Anleitung</a></li>
-                     <li><a href="imprintDE.html" data-translate-href="nav_imprint_link" data-translate="nav_imprint">Impressum</a></li>
-                     <li><a href="donateDE.html" data-translate-href="nav_donate_link">Spend a Coffee</a></li>
-                     <li><a href="historyDE.html" data-translate-href="nav_history_link" data-translate="nav_history">Versionsverlauf</a></li>
-                  </ul>
-               </nav>
-            </div>
-         </div>
-         <nav class="bg-gray-800 text-white p-4 rounded mb-4">
-            <ul class="flex space-x-4">
-               <li><a href="#calculator" class="font-bold hover:underline" onclick="showPage('calculator', event)" data-translate="nav_calculator">Kostenrechner</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="#printers" class="hover:underline" onclick="showPage('printers', event)" data-translate="nav_printers_long">3D Drucker</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="#filaments" class="hover:underline" onclick="showPage('filaments', event)" data-translate="nav_filaments">Filamente</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="#models" class="hover:underline" onclick="showPage('models', event)" data-translate="nav_models">Modelle</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="#hourly-rates" class="hover:underline" onclick="showPage('hourly-rates', event)" data-translate="nav_hourly_rates">Stundensätze</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="#electricity-prices" class="hover:underline" onclick="showPage('electricity-prices', event)" data-translate="nav_electricity_prices">Stromkosten</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="donateDE.html" data-translate-href="nav_donate_link">Spend a Coffee</a></li>
-            </ul>
-         </nav>
-         <div id="time-picker-modal" class="time-picker-modal">
-            <div class="time-picker-content">
-               <h2 class="text-lg font-bold mb-4" data-translate="time_picker_title">Zeit eingeben</h2>
-               <div class="flex items-center justify-center space-x-2">
-                  <div> <input type="number" id="time-picker-hours" min="0" max="999" class="w-24 p-2 text-4xl text-center border-2 rounded focus:border-blue-500 focus:outline-none"> <label class="block text-xs mt-1" data-translate="time_picker_hours">Stunden</label> </div>
-                  <span class="text-4xl pb-4">:</span> 
-                  <div> <input type="number" id="time-picker-minutes" min="0" max="59" class="w-24 p-2 text-4xl text-center border-2 rounded focus:border-blue-500 focus:outline-none"> <label class="block text-xs mt-1" data-translate="time_picker_minutes">Minuten</label> </div>
-               </div>
-               <div class="mt-6"> <button onclick="confirmTime()" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mr-2" data-translate="ok_button">OK</button> <button onclick="closeTimePicker()" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600" data-translate="cancel_button">Abbrechen</button> </div>
-            </div>
-         </div>
-         <div id="calculator" class="page">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_calculator">Kostenrechner</h2>
-            <form id="calc-form" class="space-y-4 bg-white p-6 rounded shadow">
-               <div>
-                  <label class="block font-semibold" data-translate="label_model_optional">3D-Modell (optional)</label> 
-                  <select id="model" class="border p-2 w-full rounded" onchange="fillModelData()">
-                     <option value="" data-translate="option_no_model">Kein Modell auswählen</option>
-                  </select>
-               </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_printer">Drucker</label> 
-                  <select id="printer" class="border p-2 w-full rounded" onchange="checkMulticolorCompatibility()">
-                     <option value="" data-translate="option_select">Wählen...</option>
-                  </select>
-               </div>
-               <div id="multicolor-warning" class="hidden text-red-500 font-semibold mt-2"></div>
-               <div id="filament-section">
-                  <label class="block font-semibold" data-translate="label_filament">Filament</label> 
-                  <div class="flex items-center space-x-2">
-                     <select id="filament" class="border p-2 w-full rounded flex-grow" onchange="updateColorPreview(this, 'filament-color-preview')">
-                        <option value="" data-translate="option_select">Wählen...</option>
-                     </select>
-                     <span id="filament-color-preview" class="w-8 h-8 border rounded-md dark:border-gray-600" style="background-color: transparent;"></span> 
-                  </div>
-               </div>
-               <div id="multicolor-filaments" class="space-y-4 hidden"></div>
-               <div> <label class="block font-semibold" data-translate="label_print_time">Druckzeit</label> <input type="text" id="print-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('print-time')" placeholder="HH:MM" /> </div>
-               <div id="filament-usage-section"> <label class="block font-semibold" data-translate="label_filament_usage">Filamentverbrauch (Gramm)</label> <input type="number" id="filament-usage" class="border p-2 w-full rounded" min="0" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_prep_time">Vorbereitungszeit</label> <input type="text" id="prep-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('prep-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_post_time">Nachbereitungszeit</label> <input type="text" id="post-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('post-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_design_time">Modellerstellungszeit pro Einheit</label> <input type="text" id="design-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('design-time')" placeholder="HH:MM" /> </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_hourly_rate">Stundensatz (€/Stunde)</label> 
-                  <div class="flex space-x-2">
-                     <select id="hourly-rate-select" class="border p-2 w-1/2 rounded" onchange="fillHourlyRate()">
-                        <option value="" data-translate="option_select">Wählen...</option>
-                     </select>
-                     <input type="number" id="hourly-rate" class="border p-2 w-1/2 rounded" step="0.1" min="0" /> 
-                  </div>
-               </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_electricity_price">Strompreis (€/kWh)</label> 
-                  <div class="flex space-x-2">
-                     <select id="electricity-price-select" class="border p-2 w-1/2 rounded" onchange="fillElectricityPrice()">
-                        <option value="" data-translate="option_select">Wählen...</option>
-                     </select>
-                     <input type="number" id="electricity-price" class="border p-2 w-1/2 rounded" step="0.01" min="0.01" max="1" /> 
-                  </div>
-               </div>
-               <div> <label class="block font-semibold" data-translate="label_failure_rate">Fehlerquote (%)</label> <input type="number" id="failure-rate" class="border p-2 w-full rounded" min="0" max="100" value="10" /> </div>
-               <div class="flex justify-between"> <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_calculate">Berechnen</button> <button type="button" onclick="resetCalculator()" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-600" data-translate="button_reset">Zurücksetzen</button> </div>
-            </form>
-            <div id="result" class="mt-4 hidden">
-               <h3 class="text-xl font-bold mb-2" data-translate="result_title">Ergebnis</h3>
-               <table class="w-full border-collapse bg-white rounded shadow">
-                  <thead>
-                     <tr class="bg-gray-200">
-                        <th class="border p-2 text-left" data-translate="result_category">Kategorie</th>
-                        <th class="border p-2 text-right" data-translate="result_costs">Kosten (€)</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <td class="border p-2" data-translate="result_depreciation">Abschreibungswert 3D Drucker</td>
-                        <td class="border p-2 text-right" id="depreciation"></td>
-                     </tr>
-                     <tr>
-                        <td class="border p-2" data-translate="result_electricity">Stromkosten</td>
-                        <td class="border p-2 text-right" id="electricity"></td>
-                     </tr>
-                     <tr>
-                        <td class="border p-2" data-translate="result_filament_cost">Filamentkosten</td>
-                        <td class="border p-2 text-right" id="filament-cost"></td>
-                     </tr>
-                     <tr>
-                        <td class="border p-2" data-translate="result_labor">Arbeitskosten</td>
-                        <td class="border p-2 text-right" id="labor"></td>
-                     </tr>
-                     <tr>
-                        <td class="border p-2" data-translate="result_failure_rate">Fehlerquote</td>
-                        <td class="border p-2 text-right" id="failure"></td>
-                     </tr>
-                     <tr class="font-bold">
-                        <td class="border p-2" data-translate="result_total">Gesamt Einstandspreis</td>
-                        <td class="border p-2 text-right" id="total"></td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-         </div>
-         <div id="printers" class="page hidden">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_printers">Drucker verwalten</h2>
-            <form id="printer-form" class="space-y-4 bg-white p-6 rounded shadow mb-4">
-               <div> <label class="block font-semibold" data-translate="label_printer_name">Druckerbezeichnung</label> <input type="text" id="printer-name" class="border p-2 w-full rounded" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_printer_price">Anschaffungspreis inkl. MwSt. (€)</label> <input type="number" id="printer-price" class="border p-2 w-full rounded" min="0" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_printer_hours">Erwartbare Druckstunden</label> <input type="number" id="printer-hours" class="border p-2 w-full rounded" min="0" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_printer_power">durchschnittliche Stromaufnahme (kW)</label> <input type="number" id="printer-power" class="border p-2 w-full rounded" step="0.01" min="0.01" max="2" /> </div>
-               <div> <label class="flex items-center"> <input type="checkbox" id="printer-multicolor" class="mr-2" onchange="togglePrinterMulticolor()" /> <span data-translate="label_multicolor_support">Multicolor-Unterstützung</span> </label> </div>
-               <div id="printer-color-count-section" class="hidden">
-                  <label class="block font-semibold" data-translate="label_color_count">Anzahl der Farben (1-16)</label> 
-                  <select id="printer-color-count" class="border p-2 w-full rounded">
-                     <option value="1">1</option>
-                     <option value="2">2</option>
-                     <option value="3">3</option>
-                     <option value="4">4</option>
-                     <option value="5">5</option>
-                     <option value="6">6</option>
-                     <option value="7">7</option>
-                     <option value="8">8</option>
-                     <option value="9">9</option>
-                     <option value="10">10</option>
-                     <option value="11">11</option>
-                     <option value="12">12</option>
-                     <option value="13">13</option>
-                     <option value="14">14</option>
-                     <option value="15">15</option>
-                     <option value="16">16</option>
-                  </select>
-               </div>
-               <button type="submit" id="printer-submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_add">Hinzufügen</button> 
-            </form>
-            <h3 class="text-xl font-bold mb-2" data-translate="list_title_printers">Vorhandene Drucker</h3>
-            <ul id="printer-list" class="space-y-2"></ul>
-         </div>
-         <div id="filaments" class="page hidden">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_filaments">Filamente verwalten</h2>
-            <form id="filament-form" class="space-y-4 bg-white p-6 rounded shadow mb-4">
-               <div> <label class="block font-semibold" data-translate="label_filament_name">Name Filament</label> <input type="text" id="filament-name" class="border p-2 w-full rounded" /> </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_filament_material">Material</label> 
-                  <select id="filament-material" class="border p-2 w-full rounded">
-                     <option>PLA</option>
-                     <option>PLA+</option>
-                     <option>PLA Hyper</option>
-                     <option>ABS</option>
-                     <option>ASA</option>
-                     <option>Green-TEC</option>
-                     <option>HIPS</option>
-                     <option>Nylon</option>
-                     <option>PC</option>
-                     <option>PETG</option>
-                     <option>PMMA</option>
-                     <option>PP</option>
-                     <option>PVA</option>
-                     <option>TPU</option>
-                     <option>TPE</option>
-                  </select>
-               </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_filament_color">Farbe</label> 
-                  <div class="flex items-center space-x-2"> <input type="color" id="filament-color" class="p-1 h-10 w-16 border rounded" value="#ff0000"> <input type="text" id="filament-color-hex" placeholder="#RRGGBB" class="border p-2 rounded w-28"> <span id="new-filament-color-preview" class="w-8 h-8 border rounded-md" style="background-color: #ff0000;"></span> </div>
-               </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_filament_effect">Effekte</label> 
-                  <select id="filament-effect" class="border p-2 w-full rounded">
-                     <option value="none" data-translate="effect_none">Standard</option>
-                     <option value="carbon" data-translate="effect_carbon">Carbon Faser</option>
-                     <option value="gitd" data-translate="effect_gitd">GitD Glow in the Dark</option>
-                     <option value="wood" data-translate="effect_wood">Holz</option>
-                     <option value="metal" data-translate="effect_metal">Metall</option>
-                     <option value="metallic_copper" data-translate="effect_metallic_copper">Metallic Kupfer</option>
-                     <option value="metallic_gold" data-translate="effect_metallic_gold">Metallic Gold</option>
-                     <option value="metallic_silver" data-translate="effect_metallic_silver">Metallic Silber</option>
-                     <option value="multicolor" data-translate="effect_multicolor">Multicolor</option>
-                  </select>
-               </div>
-               <div>
-                  <label class="block font-semibold" data-translate="label_filament_surface">Oberflächen Eigenschaft</label> 
-                  <select id="filament-gloss" class="border p-2 w-full rounded">
-                     <option value="matte" data-translate="option_surface_matte">Matt</option>
-                     <option value="glossy" data-translate="option_surface_glossy">Glänzend</option>
-                  </select>
-               </div>
-               <div> <label class="block font-semibold" data-translate="label_filament_price">Preis pro 1000 Gramm (€)</label> <input type="number" id="filament-price" class="border p-2 w-full rounded" min="0" /> </div>
-               <button type="submit" id="filament-submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_add">Hinzufügen</button> 
-            </form>
-            <h3 class="text-xl font-bold mb-2" data-translate="list_title_filaments">Vorhandene Filamente</h3>
-            <ul id="filament-list" class="space-y-2"></ul>
-         </div>
-         <div id="models" class="page hidden">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_models">Modelle verwalten</h2>
-            <form id="model-form" class="space-y-4 bg-white p-6 rounded shadow mb-4">
-               <div> <label class="block font-semibold" data-translate="label_model_name">Name 3D Modell</label> <input type="text" id="model-name" class="border p-2 w-full rounded" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_print_time">Druckzeit</label> <input type="text" id="model-print-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('model-print-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="flex items-center"> <input type="checkbox" id="model-multicolor" class="mr-2" onchange="toggleModelMulticolor()" /> <span data-translate="label_multicolor_model">Multicolor-Modell</span> </label> </div>
-               <div id="model-color-count-section" class="hidden">
-                  <label class="block font-semibold" data-translate="label_filament_count">Anzahl der Filamente (1-16)</label> 
-                  <select id="model-color-count" class="border p-2 w-full rounded" onchange="updateModelFilaments()">
-                     <option value="1">1</option>
-                     <option value="2">2</option>
-                     <option value="3">3</option>
-                     <option value="4">4</option>
-                     <option value="5">5</option>
-                     <option value="6">6</option>
-                     <option value="7">7</option>
-                     <option value="8">8</option>
-                     <option value="9">9</option>
-                     <option value="10">10</option>
-                     <option value="11">11</option>
-                     <option value="12">12</option>
-                     <option value="13">13</option>
-                     <option value="14">14</option>
-                     <option value="15">15</option>
-                     <option value="16">16</option>
-                  </select>
-               </div>
-               <div id="model-filaments" class="space-y-2"> </div>
-               <div> <label class="block font-semibold" data-translate="label_model_prep_time">Vorbereitungszeit für den 3D Druck</label> <input type="text" id="model-prep-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('model-prep-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_model_post_time">Nachbereitungszeit nach dem 3D Druck</label> <input type="text" id="model-post-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('model-post-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_model_design_time">3D Modellierungszeit (Gesamt, nicht pro Einheit)</label> <input type="text" id="model-design-time" class="border p-2 w-full rounded" readonly onclick="openTimePicker('model-design-time')" placeholder="HH:MM" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_model_sales">Anzahl der zu erwartenden Verkäufe</label> <input type="number" id="model-sales" class="border p-2 w-full rounded" min="1" value="1" /> </div>
-               <button type="submit" id="model-submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_add">Hinzufügen</button> 
-            </form>
-            <h3 class="text-xl font-bold mb-2" data-translate="list_title_models">Vorhandene Modelle</h3>
-            <ul id="model-list" class="space-y-2"></ul>
-         </div>
-         <div id="hourly-rates" class="page hidden">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_hourly_rates">Stundensätze verwalten</h2>
-            <form id="hourly-rate-form" class="space-y-4 bg-white p-6 rounded shadow mb-4">
-               <div> <label class="block font-semibold" data-translate="label_employee_name">Name Mitarbeiter</label> <input type="text" id="hourly-rate-name" class="border p-2 w-full rounded" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_hourly_rate_value">Stundensatz (€/Stunde)</label> <input type="number" id="hourly-rate-value" class="border p-2 w-full rounded" step="0.1" min="0" /> </div>
-               <button type="submit" id="hourly-rate-submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_add">Hinzufügen</button> 
-            </form>
-            <h3 class="text-xl font-bold mb-2" data-translate="list_title_hourly_rates">Vorhandene Stundensätze</h3>
-            <ul id="hourly-rate-list" class="space-y-2"></ul>
-         </div>
-         <div id="electricity-prices" class="page hidden">
-            <h2 class="text-2xl font-bold mb-4" data-translate="page_title_electricity">Stromkosten verwalten</h2>
-            <form id="electricity-price-form" class="space-y-4 bg-white p-6 rounded shadow mb-4">
-               <div> <label class="block font-semibold" data-translate="label_electricity_tariff_name">Name Stromtarif</label> <input type="text" id="electricity-price-name" class="border p-2 w-full rounded" /> </div>
-               <div> <label class="block font-semibold" data-translate="label_electricity_price_value">Strompreis (€/kWh)</label> <input type="number" id="electricity-price-value" class="border p-2 w-full rounded" step="0.01" min="0.01" max="1" /> </div>
-               <button type="submit" id="electricity-price-submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600" data-translate="button_add">Hinzufügen</button> 
-            </form>
-            <h3 class="text-xl font-bold mb-2" data-translate="list_title_electricity_prices">Vorhandene Strompreise</h3>
-            <ul id="electricity-price-list" class="space-y-2"></ul>
-         </div>
-      </div>
-      <script src="script.js"></script>
-   </body>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=3D-Print Master - by SpackenJaeger.html">
+  <title>Weiterleitung - 3D-Print Master</title>
+</head>
+<body>
+  <p>Die Seite wird weitergeleitet. Wenn das nicht funktioniert, klicke <a href="3D-Print Master - by SpackenJaeger.html">hier</a>.</p>
+</body>
 </html>
