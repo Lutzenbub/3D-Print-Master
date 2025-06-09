@@ -1,779 +1,122 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+  const translations = {
+    de: {
+      currency_symbol: '€', page_title: "3D-Print Master - by SpackenJaeger", option_select: "Wählen...", button_add: "Hinzufügen", button_save: "Speichern", button_edit: "Bearbeiten", button_delete: "Löschen", button_calculate: "Berechnen", button_reset: "Zurücksetzen", ok_button: "OK", cancel_button: "Abbrechen", theme_label: "Design", theme_light: "Hell", theme_dark: "Dunkel", theme_system: "System", save_data_button: "Daten speichern", load_data_label: "Daten laden", nav_calculator: "Kostenrechner", nav_printers: "Drucker", nav_printers_long: "3D Drucker", nav_filaments: "Filamente", nav_models: "Modelle", nav_hourly_rates: "Stundensätze", nav_electricity_prices: "Stromkosten",
+      nav_manual: "Anleitung", nav_imprint: "Impressum", nav_manual_link: "anleitungDE.html", nav_imprint_link: "imprintDE.html", nav_donate_link: "donateDE.html",nav_history: "Versionsverlauf", nav_history_link: "historyDE.html",
+      time_picker_title: "Zeit eingeben", time_picker_hours: "Stunden", time_picker_minutes: "Minuten", alert_invalid_duration: "Bitte geben Sie eine gültige Zeit an (Stunden: 0-999, Minuten: 0-59).", page_title_calculator: "Kostenrechner", label_model_optional: "3D-Modell (optional)", option_no_model: "Kein Modell auswählen", label_printer: "Drucker", label_filament: "Filament", label_print_time: "Druckzeit", label_filament_usage: "Filamentverbrauch (Gramm)", label_prep_time: "Vorbereitungszeit", label_post_time: "Nachbereitungszeit", label_design_time: "Modellerstellungszeit pro Einheit",
+      label_hourly_rate: (symbol) => `Stundensatz (${symbol}/Stunde)`, label_electricity_price: (symbol) => `Strompreis (${symbol}/kWh)`, label_failure_rate: "Fehlerquote (%)", result_title: "Ergebnis", result_category: "Kategorie", result_costs: (symbol) => `Kosten (${symbol})`, result_depreciation: "Abschreibungswert 3D Drucker", result_electricity: "Stromkosten", result_filament_cost: "Filamentkosten", result_labor: "Arbeitskosten", result_failure_rate: "Fehlerquote", result_total: "Gesamt Einstandspreis", page_title_printers: "Drucker verwalten", list_title_printers: "Vorhandene Drucker", label_printer_name: "Druckerbezeichnung", label_printer_price: (symbol) => `Anschaffungspreis inkl. MwSt. (${symbol})`, label_printer_hours: "Erwartbare Druckstunden", label_printer_power: "durchschnittliche Stromaufnahme (kW)", label_multicolor_support: "Multicolor-Unterstützung", label_color_count: "Anzahl der Farben (1-16)", page_title_filaments: "Filamente verwalten", list_title_filaments: "Vorhandene Filamente", label_filament_name: "Name Filament",
+      label_filament_material: "Material", label_filament_effect: "Effekte", label_filament_color: "Farbe",
+      effect_none: "Standard", effect_carbon: "Carbon Faser", effect_gitd: "GitD Glow in the Dark", effect_wood: "Holz", effect_metal: "Metall", effect_metallic_copper: "Metallic Kupfer", effect_metallic_gold: "Metallic Gold", effect_metallic_silver: "Metallic Silber", effect_multicolor: "Multicolor",
+      label_filament_surface: "Oberflächen Eigenschaft", option_surface_matte: "Matt", option_surface_glossy: "Glänzend", label_filament_price: (symbol) => `Preis pro 1000 Gramm (${symbol})`,
+      page_title_models: "Modelle verwalten", list_title_models: "Vorhandene Modelle", label_model_name: "Name 3D Modell", label_multicolor_model: "Multicolor-Modell", label_filament_count: "Anzahl der Filamente (1-16)", label_model_prep_time: "Vorbereitungszeit für den 3D Druck", label_model_post_time: "Nachbereitungszeit nach dem 3D Druck", label_model_design_time: "3D Modellierungszeit (Gesamt, nicht pro Einheit)", label_model_sales: "Anzahl der zu erwartenden Verkäufe", page_title_hourly_rates: "Stundensätze verwalten", list_title_hourly_rates: "Vorhandene Stundensätze", label_employee_name: "Name Mitarbeiter", label_hourly_rate_value: (symbol) => `Stundensatz (${symbol}/Stunde)`, page_title_electricity: "Stromkosten verwalten", list_title_electricity_prices: "Vorhandene Strompreise", label_electricity_tariff_name: "Name Stromtarif", label_electricity_price_value: (symbol) => `Strompreis (${symbol}/kWh)`,
+      alert_invalid_time: "Bitte geben Sie eine gültige Zeit ein (Stunden: >=0, Minuten: 0-59).", alert_invalid_time_format: "Bitte geben Sie eine gültige Zeit im Format HH:MM ein.", alert_printer_form_invalid: "Bitte füllen Sie alle Felder korrekt aus (Preis ≥ 0, Stunden > 0, Stromaufnahme: 0,01–2 kW).", alert_filament_form_invalid: "Bitte füllen Sie alle Felder korrekt aus (Preis ≥ 0).", alert_model_form_invalid_multicolor: "Bitte füllen Sie alle Filamentangaben korrekt aus (Filament auswählen, Verbrauch > 0).", alert_model_form_invalid_singlecolor: "Bitte geben Sie ein Filament und einen Verbrauch > 0 an.", alert_model_form_invalid_general: "Bitte füllen Sie alle Pflichtfelder korrekt aus (Name, Druckzeit > 0, Verkäufe ≥ 1).", alert_hourly_rate_form_invalid: "Bitte füllen Sie alle Felder korrekt aus (Satz ≥ 0).", alert_electricity_price_form_invalid: "Bitte füllen Sie alle Felder korrekt aus (Preis: 0,01–1 €/kWh).", alert_select_printer: "Bitte wählen Sie einen Drucker aus.", alert_print_time_zero: "Bitte geben Sie eine Druckzeit größer als 0 ein.", alert_select_filament: "Bitte wählen Sie ein Filament aus.", alert_filament_usage_zero: "Bitte geben Sie einen Filamentverbrauch > 0 an.", alert_multicolor_usage_zero: "Bitte geben Sie für alle Filamente einen Verbrauch > 0 an.", confirm_load_data: "Achtung: Das Laden einer Datei wird alle aktuellen Daten überschreiben. Möchten Sie fortfahren?", alert_load_data_success: "Daten erfolgreich geladen!", alert_load_data_error: "Fehler beim Laden der Datei: ", alert_load_data_invalid_format: "Ungültiges Dateiformat: Die Datei enthält nicht die erwarteten Daten.", alert_read_file_error: "Fehler beim Lesen der Datei.", multicolor_warning_unsupported: "Der ausgewählte Drucker unterstützt kein Multicolor-Druck.", multicolor_warning_insufficient_colors: (printerColors, modelColors) => `Der ausgewählte Drucker unterstützt nur ${printerColors} Farben. Dieses Modell benötigt ${modelColors} Farben.`, list_item_printer_multicolor: "Multicolor",
+      list_item_filament_properties: { matte: 'Matt', glossy: 'Glänzend' },
+      list_item_filament_effects: { carbon: 'Carbon Faser', gitd: 'Glow in the Dark', wood: 'Holz', metal: 'Metall', metallic_copper: 'Kupfer', metallic_gold: 'Gold', metallic_silver: 'Silber', multicolor: 'Multicolor' },
+      list_item_model_print: "Druck", list_item_model_filament: "Filament", list_item_model_prep: "Vorb.", list_item_model_post: "Nachb.", list_item_model_design: "Design", list_item_model_unit: "Einheit", list_item_model_sales: "Verkäufe",
+    },
+    en: {
+      currency_symbol: '$', page_title: "3D-Print Master - by SpackenJaeger", option_select: "Select...", button_add: "Add", button_save: "Save", button_edit: "Edit", button_delete: "Delete", button_calculate: "Calculate", button_reset: "Reset", ok_button: "OK", cancel_button: "Cancel", theme_label: "Design", theme_light: "Light", theme_dark: "Dark", theme_system: "System", save_data_button: "Save Data", load_data_label: "Load Data", nav_calculator: "Calculator", nav_printers: "Printers", nav_printers_long: "3D Printers", nav_filaments: "Filaments", nav_models: "Models", nav_hourly_rates: "Hourly Rates", nav_electricity_prices: "Electricity Costs",
+      nav_manual: "Manual", nav_imprint: "Imprint", nav_manual_link: "anleitungEN.html", nav_imprint_link: "imprintEN.html", nav_donate_link: "donateEN.html", nav_history: "Version History", nav_history_link: "historyEN.html",
+      time_picker_title: "Enter duration", time_picker_hours: "Hours", time_picker_minutes: "Minutes", alert_invalid_duration: "Please enter a valid duration (Hours: 0-999, Minutes: 0-59).",
+      page_title_calculator: "Cost Calculator", label_model_optional: "3D-Model (optional)", option_no_model: "Do not select a model", label_printer: "Printer", label_filament: "Filament", label_print_time: "Print Time", label_filament_usage: "Filament Usage (grams)", label_prep_time: "Preparation Time", label_post_time: "Post-processing Time", label_design_time: "Model Creation Time per Unit",
+      label_hourly_rate: (symbol) => `Hourly Rate (${symbol}/hour)`, label_electricity_price: (symbol) => `Electricity Price (${symbol}/kWh)`, label_failure_rate: "Failure Rate (%)", result_title: "Result", result_category: "Category", result_costs: (symbol) => `Costs (${symbol})`, result_depreciation: "Depreciation 3D Printer", result_electricity: "Electricity Costs", result_filament_cost: "Filament Costs", result_labor: "Labor Costs", result_failure_rate: "Failure Rate", result_total: "Total Cost Price", page_title_printers: "Manage Printers", list_title_printers: "Existing Printers", label_printer_name: "Printer Name", label_printer_price: (symbol) => `Purchase Price incl. VAT (${symbol})`, label_printer_hours: "Expected Print Hours", label_printer_power: "Average Power Consumption (kW)", label_multicolor_support: "Multicolor Support", label_color_count: "Number of Colors (1-16)", page_title_filaments: "Manage Filaments", list_title_filaments: "Existing Filaments", label_filament_name: "Filament Name",
+      label_filament_material: "Material", label_filament_effect: "Effect", label_filament_color: "Color",
+      effect_none: "Standard", effect_carbon: "Carbon Fiber", effect_gitd: "GitD Glow in the Dark", effect_wood: "Wood", effect_metal: "Metal", effect_metallic_copper: "Metallic Copper", effect_metallic_gold: "Metallic Gold", effect_metallic_silver: "Metallic Silver", effect_multicolor: "Multicolor",
+      label_filament_surface: "Surface Property", option_surface_matte: "Matte", option_surface_glossy: "Glossy", label_filament_price: (symbol) => `Price per 1000 grams (${symbol})`,
+      page_title_models: "Manage Models", list_title_models: "Existing Models", label_model_name: "3D Model Name", label_multicolor_model: "Multicolor Model", label_filament_count: "Number of Filaments (1-16)", label_model_prep_time: "Preparation time for 3D printing", label_model_post_time: "Post-processing time after 3D printing", label_model_design_time: "3D modeling time (total, not per unit)", label_model_sales: "Number of expected sales", page_title_hourly_rates: "Manage Hourly Rates", list_title_hourly_rates: "Existing Hourly Rates", label_employee_name: "Employee Name", label_hourly_rate_value: (symbol) => `Hourly Rate (${symbol}/hour)`, page_title_electricity: "Manage Electricity Costs", list_title_electricity_prices: "Existing Electricity Prices", label_electricity_tariff_name: "Electricity Tariff Name", label_electricity_price_value: (symbol) => `Electricity Price (${symbol}/kWh)`,
+      alert_invalid_time: "Please enter a valid time (hours: >=0, minutes: 0-59).", alert_invalid_time_format: "Please enter a valid time in HH:MM format.", alert_printer_form_invalid: "Please fill out all fields correctly (Price ≥ 0, Hours > 0, Power: 0.01–2 kW).", alert_filament_form_invalid: "Please fill out all fields correctly (Price ≥ 0).", alert_model_form_invalid_multicolor: "Please fill out all filament details correctly (Select filament, Usage > 0).", alert_model_form_invalid_singlecolor: "Please specify a filament and a usage > 0.", alert_model_form_invalid_general: "Please fill out all required fields correctly (Name, Print time > 0, Sales ≥ 1).", alert_hourly_rate_form_invalid: "Please fill out all fields correctly (Rate ≥ 0).", alert_electricity_price_form_invalid: "Please fill out all fields correctly (Price: 0.01–1 €/kWh).", alert_select_printer: "Please select a printer.", alert_print_time_zero: "Please enter a print time greater than 0.", alert_select_filament: "Please select a filament.", alert_filament_usage_zero: "Please enter a filament usage greater than 0.", alert_multicolor_usage_zero: "Please enter a usage > 0 for all filaments.", confirm_load_data: "Warning: Loading a file will overwrite all current data. Do you want to continue?", alert_load_data_success: "Data loaded successfully!", alert_load_data_error: "Error loading file: ", alert_load_data_invalid_format: "Invalid file format: The file does not contain the expected data.", alert_read_file_error: "Error reading the file.", multicolor_warning_unsupported: "The selected printer does not support multicolor printing.", multicolor_warning_insufficient_colors: (printerColors, modelColors) => `The selected printer only supports ${printerColors} colors. This model requires ${modelColors} colors.`, list_item_printer_multicolor: "Multicolor",
+      list_item_filament_properties: { matte: 'Matte', glossy: 'Glossy' },
+      list_item_filament_effects: { carbon: 'Carbon Fiber', gitd: 'Glow in the Dark', wood: 'Wood', metal: 'Metal', metallic_copper: 'Copper', metallic_gold: 'Gold', metallic_silver: 'Silver', multicolor: 'Multicolor' },
+      list_item_model_print: "Print", list_item_model_filament: "Filament", list_item_model_prep: "Prep", list_item_model_post: "Post", list_item_model_design: "Design", list_item_model_unit: "unit", list_item_model_sales: "Sales",
+    }
+  };
+
+  let currentLanguage = 'de';
+  function setLanguage(lang) { if (!translations[lang]) return; currentLanguage = lang; localStorage.setItem('userLanguage', lang); document.documentElement.lang = lang; document.title = translations[lang].page_title; const t = translations[lang]; const currencySymbol = t.currency_symbol; document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); const translationValue = t[key]; if (typeof translationValue === 'function') { el.textContent = translationValue(currencySymbol); } else if (translationValue) { el.textContent = translationValue; } }); document.querySelectorAll('[data-translate-href]').forEach(el => { const key = el.getAttribute('data-translate-href'); if (t[key]) { el.href = t[key]; } }); updateAllLists(); resetCalculatorSelectOptions(); }
+  function updateAllLists() { updatePrinterList(); updateFilamentList(); updateModelList(); updateHourlyRateList(); updateElectricityPriceList(); }
+  function resetCalculatorSelectOptions() { const t = translations[currentLanguage]; document.querySelector('#model option[value=""]').textContent = t.option_no_model; document.querySelector('#printer option[value=""]').textContent = t.option_select; document.querySelector('#filament option[value=""]').textContent = t.option_select; document.querySelector('#hourly-rate-select option[value=""]').textContent = t.option_select; document.querySelector('#electricity-price-select option[value=""]').textContent = t.option_select; }
   let printers = JSON.parse(localStorage.getItem('printers') || '[]');
   let filaments = JSON.parse(localStorage.getItem('filaments') || '[]');
   let models = JSON.parse(localStorage.getItem('models') || '[]');
   let hourlyRates = JSON.parse(localStorage.getItem('hourlyRates') || '[]');
   let electricityPrices = JSON.parse(localStorage.getItem('electricityPrices') || '[]');
-
-  function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (Math.random() * 16 | 0).toString(16));
-  }
-
-  function toDecimalHours(hhmm) {
-    if (!hhmm || !/^\d+:\d{2}$/.test(hhmm)) return 0;
-    const [h, m] = hhmm.split(':').map(Number);
-    return h >= 0 && m >= 0 && m < 60 ? h + m / 60 : 0;
-  }
-
-  function toHHMM(decimalHours) {
-    if (!decimalHours || isNaN(decimalHours)) return '00:00';
-    const h = Math.floor(decimalHours);
-    const m = Math.round((decimalHours - h) * 60);
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-  }
-
+  function generateUUID() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (Math.random() * 16 | 0).toString(16)); }
+  function toDecimalHours(hhmm) { if (!hhmm || !/^\d+([:]\d{2})$/.test(hhmm)) return 0; const [h, m] = hhmm.split(':').map(Number); return h >= 0 && m >= 0 && m < 60 ? h + m / 60 : 0; }
+  function toHHMM(decimalHours) { if (!decimalHours || isNaN(decimalHours)) return '00:00'; const h = Math.floor(decimalHours); const m = Math.round((decimalHours - h) * 60); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`; }
+  function createSearchableSelect(originalSelect) { if (originalSelect.previousElementSibling && originalSelect.previousElementSibling.classList.contains('searchable-select-container')) { return; } originalSelect.style.display = 'none'; const container = document.createElement('div'); container.className = 'searchable-select-container'; if (originalSelect.classList.contains('w-full')) { container.classList.add('w-full'); } if (originalSelect.classList.contains('flex-grow')) { container.classList.add('flex-grow'); } const display = document.createElement('div'); display.className = 'searchable-select-display'; display.textContent = originalSelect.options[originalSelect.selectedIndex].text; const dropdown = document.createElement('div'); dropdown.className = 'searchable-select-dropdown'; const searchInput = document.createElement('input'); searchInput.type = 'search'; searchInput.className = 'searchable-select-search'; searchInput.placeholder = 'Suchen...'; searchInput.addEventListener('click', e => e.stopPropagation()); const optionsList = document.createElement('ul'); optionsList.className = 'searchable-select-options'; Array.from(originalSelect.options).forEach(option => { const listItem = document.createElement('li'); listItem.textContent = option.text; listItem.dataset.value = option.value; optionsList.appendChild(listItem); listItem.addEventListener('click', () => { originalSelect.value = option.value; display.textContent = option.text; container.classList.remove('open'); originalSelect.dispatchEvent(new Event('change')); }); }); dropdown.appendChild(searchInput); dropdown.appendChild(optionsList); container.appendChild(display); container.appendChild(dropdown); originalSelect.parentNode.insertBefore(container, originalSelect); display.addEventListener('click', () => { container.classList.toggle('open'); if (container.classList.contains('open')) { searchInput.focus(); searchInput.value = ''; Array.from(optionsList.children).forEach(li => li.classList.remove('hidden')); } }); searchInput.addEventListener('input', () => { const searchTerm = searchInput.value.toLowerCase(); Array.from(optionsList.children).forEach(li => { const text = li.textContent.toLowerCase(); li.classList.toggle('hidden', !text.includes(searchTerm)); }); }); document.addEventListener('click', (e) => { if (!container.contains(e.target)) { container.classList.remove('open'); } }); }
   const burgerBtn = document.getElementById('burger-btn');
   const burgerMenu = document.getElementById('burger-menu');
-  burgerBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    burgerMenu.classList.toggle('open');
-  });
-  document.addEventListener('click', e => {
-    if (!burgerMenu.contains(e.target) && !burgerBtn.contains(e.target)) burgerMenu.classList.remove('open');
-  });
-
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-  }
-  document.getElementById('theme-select').addEventListener('change', e => {
-    const theme = e.target.value;
-    applyTheme(theme);
-    localStorage.setItem('theme', theme);
-    burgerMenu.classList.remove('open');
-  });
+  burgerBtn.addEventListener('click', e => { e.stopPropagation(); burgerMenu.classList.toggle('open'); });
+  document.addEventListener('click', e => { if (!burgerMenu.contains(e.target) && !burgerBtn.contains(e.target)) burgerMenu.classList.remove('open'); });
+  function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
+  document.getElementById('theme-select').addEventListener('change', e => { const theme = e.target.value; applyTheme(theme); localStorage.setItem('theme', theme); burgerMenu.classList.remove('open'); });
   applyTheme(localStorage.getItem('theme') || 'system');
   document.getElementById('theme-select').value = localStorage.getItem('theme') || 'system';
-
   let currentTimeField = null;
-  window.openTimePicker = fieldId => {
-    currentTimeField = fieldId;
-    const modal = document.getElementById('time-picker-modal');
-    const hoursScroll = document.getElementById('hours-scroll');
-    const minutesScroll = document.getElementById('minutes-scroll');
-    const timeInput = document.getElementById('time-input');
-    let [h, m] = (document.getElementById(fieldId).value || '00:00').split(':').map(Number);
-    timeInput.value = document.getElementById(fieldId).value || '00:00';
-
-    hoursScroll.innerHTML = '';
-    for (let i = 0; i <= 100; i++) {
-      const div = document.createElement('div');
-      div.textContent = i.toString().padStart(2, '0');
-      div.onclick = () => timeInput.value = `${(h = i).toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-      hoursScroll.appendChild(div);
-    }
-
-    minutesScroll.innerHTML = '';
-    for (let i = 0; i < 60; i++) {
-      const div = document.createElement('div');
-      div.textContent = i.toString().padStart(2, '0');
-      div.onclick = () => timeInput.value = `${h.toString().padStart(2, '0')}:${(m = i).toString().padStart(2, '0')}`;
-      minutesScroll.appendChild(div);
-    }
-
-    timeInput.oninput = () => {
-      const value = timeInput.value;
-      if (/^\d+:\d{2}$/.test(value)) {
-        [h, m] = value.split(':').map(Number);
-        if (h >= 0 && m >= 0 && m < 60) timeInput.value = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-      }
-    };
-    modal.style.display = 'flex';
-  };
-
-  window.confirmTime = () => {
-    const timeInput = document.getElementById('time-input').value;
-    if (/^\d+:\d{2}$/.test(timeInput)) {
-      const [h, m] = timeInput.split(':').map(Number);
-      if (h >= 0 && m >= 0 && m < 60) {
-        document.getElementById(currentTimeField).value = timeInput;
-        document.getElementById('time-picker-modal').style.display = 'none';
-        currentTimeField = null;
-      } else alert('Bitte geben Sie eine gültige Zeit ein (Stunden: >=0, Minuten: 0-59).');
-    } else alert('Bitte geben Sie eine gültige Zeit im Format HH:MM ein.');
-  };
-
-  window.closeTimePicker = () => {
-    document.getElementById('time-picker-modal').style.display = 'none';
-    currentTimeField = null;
-  };
-
-  window.showPage = (pageId, event) => {
-    if (event) event.preventDefault();
-    document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-    document.getElementById(pageId)?.classList.remove('hidden');
-    burgerMenu.classList.remove('open');
-  };
-
+  window.openTimePicker = (fieldId) => { currentTimeField = fieldId; const modal = document.getElementById('time-picker-modal'); const hoursInput = document.getElementById('time-picker-hours'); const minutesInput = document.getElementById('time-picker-minutes'); const currentValue = document.getElementById(fieldId).value || '00:00'; const [h, m] = currentValue.split(':').map(Number); hoursInput.value = h || 0; minutesInput.value = m || 0; modal.style.display = 'flex'; hoursInput.focus(); hoursInput.select(); };
+  window.confirmTime = () => { const hoursInput = document.getElementById('time-picker-hours'); const minutesInput = document.getElementById('time-picker-minutes'); const t = translations[currentLanguage]; let hours = parseInt(hoursInput.value, 10) || 0; let minutes = parseInt(minutesInput.value, 10) || 0; if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 999 || minutes < 0 || minutes > 59) { alert(t.alert_invalid_duration); return; } const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`; document.getElementById(currentTimeField).value = formattedTime; closeTimePicker(); };
+  window.closeTimePicker = () => { document.getElementById('time-picker-modal').style.display = 'none'; currentTimeField = null; };
+  window.showPage = (pageId, event) => { if (event) event.preventDefault(); document.querySelectorAll('.page').forEach(page => page.classList.add('hidden')); const pageToShow = document.getElementById(pageId); if (pageToShow) { pageToShow.classList.remove('hidden'); if (pageId === 'models') { updateModelFilaments(); } } burgerMenu.classList.remove('open'); };
+  window.updateColorPreview = (selectElement, previewElementId) => { const finalPreviewBox = typeof previewElementId === 'string' ? document.getElementById(previewElementId) : previewElementId; if (!finalPreviewBox) return; const selectedId = selectElement.value; const filament = filaments.find(f => f.id === selectedId); if (filament) { finalPreviewBox.style.backgroundColor = filament.color; finalPreviewBox.style.border = '1px solid #888'; } else { finalPreviewBox.style.backgroundColor = 'transparent'; finalPreviewBox.style.border = ''; } };
   window.togglePrinterMulticolor = () => document.getElementById('printer-color-count-section').classList.toggle('hidden', !document.getElementById('printer-multicolor').checked);
-
-  window.toggleModelMulticolor = () => {
-    document.getElementById('model-color-count-section').classList.toggle('hidden', !document.getElementById('model-multicolor').checked);
-    updateModelFilaments();
-  };
-
-  window.updateModelFilaments = () => {
-    const isMulticolor = document.getElementById('model-multicolor').checked;
-    const colorCount = parseInt(document.getElementById('model-color-count').value) || 1;
-    const container = document.getElementById('model-filaments');
-    container.innerHTML = '';
-    const filamentOptions = '<option value="">Wählen...</option>' + filaments.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
-    for (let i = 0; i < (isMulticolor ? colorCount : 1); i++) {
-      container.innerHTML += `
-        <div class="filament-entry">
-          <label class="block font-semibold">Filament ${isMulticolor ? (i + 1) : ''}</label>
-          <select class="model-filament border p-2 w-full rounded">${filamentOptions}</select>
-          <label class="block font-semibold mt-2">Filamentverbrauch (Gramm)</label>
-          <input type="number" class="model-filament-usage border p-2 w-full rounded" min="0" />
-        </div>`;
-    }
-  };
-
-  function updatePrinterList() {
-    const select = document.getElementById('printer');
-    const list = document.getElementById('printer-list');
-    select.innerHTML = '<option value="">Wählen...</option>';
-    list.innerHTML = '';
-    printers.forEach(p => {
-      select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
-      list.innerHTML += `
-        <li class="flex justify-between bg-white p-2 rounded shadow">
-          <span>${p.name} - ${p.price} €, ${p.hours} h, ${p.power} kW${p.isMulticolor ? `, Multicolor (${p.colorCount})` : ''}</span>
-          <div>
-            <button onclick="editPrinter('${p.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">Bearbeiten</button>
-            <button onclick="deletePrinter('${p.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">Löschen</button>
-          </div>
-        </li>`;
-    });
-    localStorage.setItem('printers', JSON.stringify(printers));
-  }
-
-  function updateFilamentList() {
-    const select = document.getElementById('filament');
-    const list = document.getElementById('filament-list');
-    select.innerHTML = '<option value="">Wählen...</option>';
-    list.innerHTML = '';
-    filaments.forEach(f => {
-      const props = [f.metallic === 'none' ? '' : f.metallic === 'silver' ? 'Silber' : 'Gold', f.gloss === 'matte' ? 'Matt' : 'Glänzend'].filter(p => p).join(', ');
-      select.innerHTML += `<option value="${f.id}">${f.name}</option>`;
-      list.innerHTML += `
-        <li class="flex justify-between bg-white p-2 rounded shadow">
-          <span><span class="color-dot" style="background-color: ${f.color}"></span>${f.name}${props ? ` (${props})` : ''} - ${f.price} €/kg</span>
-          <div>
-            <button onclick="editFilament('${f.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">Bearbeiten</button>
-            <button onclick="deleteFilament('${f.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">Löschen</button>
-          </div>
-        </li>`;
-    });
-    localStorage.setItem('filaments', JSON.stringify(filaments));
-    updateModelFilaments();
-  }
-
-  function updateModelList() {
-    const select = document.getElementById('model');
-    const list = document.getElementById('model-list');
-    select.innerHTML = '<option value="">Kein Modell auswählen</option>';
-    list.innerHTML = '';
-    models.forEach(m => {
-      const filamentInfo = m.isMulticolor ? `Multicolor (${m.filaments.length})` : `${m.filamentUsage} g`;
-      select.innerHTML += `<option value="${m.id}">${m.name}</option>`;
-      list.innerHTML += `
-        <li class="flex justify-between bg-white p-2 rounded shadow">
-          <span>${m.name} - Druck: ${toHHMM(m.printTime)}, Filament: ${filamentInfo}, Vorb.: ${toHHMM(m.prepTime)}, Nachb.: ${toHHMM(m.postTime)}, Design: ${toHHMM(m.designTime / m.sales)}/Einheit (Verkäufe: ${m.sales})</span>
-          <div>
-            <button onclick="editModel('${m.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">Bearbeiten</button>
-            <button onclick="deleteModel('${m.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">Löschen</button>
-          </div>
-        </li>`;
-    });
-    localStorage.setItem('models', JSON.stringify(models));
-  }
-
-  function updateHourlyRateList() {
-    const select = document.getElementById('hourly-rate-select');
-    const list = document.getElementById('hourly-rate-list');
-    select.innerHTML = '<option value="">Wählen...</option>';
-    list.innerHTML = '';
-    hourlyRates.forEach(h => {
-      select.innerHTML += `<option value="${h.id}">${h.name} (${h.rate} €/h)</option>`;
-      list.innerHTML += `
-        <li class="flex justify-between bg-white p-2 rounded shadow">
-          <span>${h.name} - ${h.rate} €/h</span>
-          <div>
-            <button onclick="editHourlyRate('${h.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">Bearbeiten</button>
-            <button onclick="deleteHourlyRate('${h.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">Löschen</button>
-          </div>
-        </li>`;
-    });
-    localStorage.setItem('hourlyRates', JSON.stringify(hourlyRates));
-  }
-
-  function updateElectricityPriceList() {
-    const select = document.getElementById('electricity-price-select');
-    const list = document.getElementById('electricity-price-list');
-    select.innerHTML = '<option value="">Wählen...</option>';
-    list.innerHTML = '';
-    electricityPrices.forEach(e => {
-      select.innerHTML += `<option value="${e.id}">${e.name} (${e.price} €/kWh)</option>`;
-      list.innerHTML += `
-        <li class="flex justify-between bg-white p-2 rounded shadow">
-          <span>${e.name} - ${e.price} €/kWh</span>
-          <div>
-            <button onclick="editElectricityPrice('${e.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">Bearbeiten</button>
-            <button onclick="deleteElectricityPrice('${e.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">Löschen</button>
-          </div>
-        </li>`;
-    });
-    localStorage.setItem('electricityPrices', JSON.stringify(electricityPrices));
-  }
-
-  window.checkMulticolorCompatibility = () => {
-    const modelId = document.getElementById('model').value;
-    const printerId = document.getElementById('printer').value;
-    const warning = document.getElementById('multicolor-warning');
-    const printerSelect = document.getElementById('printer');
-    warning.classList.add('hidden');
-    printerSelect.classList.remove('error-border');
-
-    const model = models.find(m => m.id === modelId);
-    const printer = printers.find(p => p.id === printerId);
-
-    if (model && printer && model.isMulticolor) {
-      if (!printer.isMulticolor) {
-        warning.textContent = 'Der ausgewählte Drucker unterstützt kein Multicolor-Druck.';
-        warning.classList.remove('hidden');
-        printerSelect.classList.add('error-border');
-      } else if (printer.colorCount < model.filaments.length) {
-        warning.textContent = `Der ausgewählte Drucker unterstützt nur ${printer.colorCount} Farben. Dieses Modell benötigt ${model.filaments.length} Farben.`;
-        warning.classList.remove('hidden');
-        printerSelect.classList.add('error-border');
-      }
-    }
-  };
-
-  window.fillModelData = () => {
-    const modelId = document.getElementById('model').value;
-    const model = models.find(m => m.id === modelId);
-    const filamentSection = document.getElementById('filament-section');
-    const filamentUsageInput = document.getElementById('filament-usage');
-    const multicolorSection = document.getElementById('multicolor-filaments');
-
-    checkMulticolorCompatibility();
-
-    if (model) {
-      document.getElementById('print-time').value = toHHMM(model.printTime);
-      document.getElementById('prep-time').value = toHHMM(model.prepTime);
-      document.getElementById('post-time').value = toHHMM(model.postTime);
-      document.getElementById('design-time').value = toHHMM(model.designTime / model.sales);
-      if (model.isMulticolor) {
-        filamentSection.classList.add('hidden');
-        filamentUsageInput.classList.add('hidden');
-        multicolorSection.classList.remove('hidden');
-        multicolorSection.innerHTML = model.filaments.map((f, i) => `
-          <div class="filament-entry">
-            <label class="block font-semibold">Filament ${i + 1}</label>
-            <select class="multicolor-filament border p-2 w-full rounded">
-              <option value="">Wählen...</option>
-              ${filaments.map(fil => `<option value="${fil.id}" ${fil.id === f.filamentId ? 'selected' : ''}>${fil.name}</option>`).join('')}
-            </select>
-            <label class="block font-semibold mt-2">Filamentverbrauch (Gramm)</label>
-            <input type="number" class="multicolor-filament-usage border p-2 w-full rounded" min="0" value="${f.usage}" />
-          </div>`).join('');
-      } else {
-        filamentSection.classList.remove('hidden');
-        filamentUsageInput.classList.remove('hidden');
-        multicolorSection.classList.add('hidden');
-        document.getElementById('filament').value = model.filaments[0]?.filamentId || '';
-        document.getElementById('filament-usage').value = model.filamentUsage;
-      }
-    } else {
-      document.getElementById('print-time').value = '';
-      document.getElementById('filament').value = '';
-      document.getElementById('filament-usage').value = '';
-      document.getElementById('prep-time').value = '';
-      document.getElementById('post-time').value = '';
-      document.getElementById('design-time').value = '';
-      filamentSection.classList.remove('hidden');
-      filamentUsageInput.classList.remove('hidden');
-      multicolorSection.classList.add('hidden');
-    }
-  };
-
-  window.fillHourlyRate = () => {
-    const rateId = document.getElementById('hourly-rate-select').value;
-    const rate = hourlyRates.find(h => h.id === rateId);
-    document.getElementById('hourly-rate').value = rate ? rate.rate : '';
-  };
-
-  window.fillElectricityPrice = () => {
-    const priceId = document.getElementById('electricity-price-select').value;
-    const price = electricityPrices.find(e => e.id === priceId);
-    document.getElementById('electricity-price').value = price ? price.price : '';
-  };
-
+  window.toggleModelMulticolor = () => { document.getElementById('model-color-count-section').classList.toggle('hidden', !document.getElementById('model-multicolor').checked); updateModelFilaments(); };
+  const getFilamentDisplayText = (f) => { const t = translations[currentLanguage]; const glossText = t.list_item_filament_properties[f.gloss]; const effectText = (f.effect && f.effect !== 'none') ? t.list_item_filament_effects[f.effect] : ''; const props = [effectText, glossText].filter(Boolean).join(', '); return `[${f.material}] ${f.name}${props ? ` (${props})` : ''} - ${f.price} ${t.currency_symbol}/kg`; };
+  window.updateModelFilaments = () => { const isMulticolor = document.getElementById('model-multicolor').checked; const colorCount = parseInt(document.getElementById('model-color-count').value) || 1; const container = document.getElementById('model-filaments'); container.innerHTML = ''; const t = translations[currentLanguage]; const filamentOptions = `<option value="">${t.option_select}</option>` + filaments.map(f => `<option value="${f.id}">${getFilamentDisplayText(f)}</option>`).join(''); let filamentEntriesHTML = ''; const loopCount = isMulticolor ? colorCount : 1; for (let i = 0; i < loopCount; i++) { const labelText = isMulticolor ? `${t.label_filament} ${i + 1}` : t.label_filament; filamentEntriesHTML += `<div class="filament-entry mb-4"> <label class="block font-semibold">${labelText}</label> <select class="model-filament border p-2 w-full rounded">${filamentOptions}</select> <label class="block font-semibold mt-2">${t.label_filament_usage}</label> <input type="number" class="model-filament-usage border p-2 w-full rounded" min="0" /> </div>`; } container.innerHTML = filamentEntriesHTML; container.querySelectorAll('.model-filament').forEach(select => { createSearchableSelect(select); }); };
+  function updateList(config) { const select = document.getElementById(config.selectId); const list = document.getElementById(config.listId); const oldContainer = select?.previousElementSibling; if (oldContainer && oldContainer.classList.contains('searchable-select-container')) { oldContainer.remove(); } if (select) { select.style.display = ''; select.innerHTML = `<option value="">${config.defaultOptionText}</option>`; } list.innerHTML = ''; const t = translations[currentLanguage]; config.data.forEach(item => { if(select) select.innerHTML += config.getSelectOption(item); list.innerHTML += `<li class="flex justify-between items-center bg-white p-2 rounded shadow"> <span>${config.getListItemText(item, t)}</span> <div> <button onclick="${config.editFn}('${item.id}')" class="bg-green-500 text-white p-1 rounded hover:bg-green-600 mr-2">${t.button_edit}</button> <button onclick="${config.deleteFn}('${item.id}')" class="bg-red-500 text-white p-1 rounded hover:bg-red-600">${t.button_delete}</button> </div> </li>`; }); if (select && ['model', 'printer', 'filament'].includes(config.selectId)) { createSearchableSelect(select); } localStorage.setItem(config.localStorageKey, JSON.stringify(config.data)); }
+  const updatePrinterList = () => updateList({ data: printers, selectId: 'printer', listId: 'printer-list', localStorageKey: 'printers', defaultOptionText: translations[currentLanguage].option_select, getSelectOption: p => `<option value="${p.id}">${p.name}</option>`, getListItemText: (p, t) => `${p.name} - ${p.price} ${t.currency_symbol}, ${p.hours} h, ${p.power} kW${p.isMulticolor ? `, ${t.list_item_printer_multicolor} (${p.colorCount})` : ''}`, editFn: 'editPrinter', deleteFn: 'deletePrinter' });
+  const updateFilamentList = () => { updateList({ data: filaments, selectId: 'filament', listId: 'filament-list', localStorageKey: 'filaments', defaultOptionText: translations[currentLanguage].option_select, getSelectOption: f => `<option value="${f.id}">${getFilamentDisplayText(f)}</option>`, getListItemText: f => `<span class="color-dot" style="background-color: ${f.color}"></span>${getFilamentDisplayText(f)}`, editFn: 'editFilament', deleteFn: 'deleteFilament' }); if(document.getElementById('models').classList.contains('hidden') === false) { updateModelFilaments(); } };
+  const updateModelList = () => updateList({ data: models, selectId: 'model', listId: 'model-list', localStorageKey: 'models', defaultOptionText: translations[currentLanguage].option_no_model, getSelectOption: m => `<option value="${m.id}">${m.name}</option>`, getListItemText: (m, t) => { const filamentInfo = m.isMulticolor ? `${t.list_item_printer_multicolor} (${m.filaments.length})` : `${m.filamentUsage} g`; return `${m.name} - ${t.list_item_model_print}: ${toHHMM(m.printTime)}, ${t.list_item_model_filament}: ${filamentInfo}, ${t.list_item_model_prep}: ${toHHMM(m.prepTime)}, ${t.list_item_model_post}: ${toHHMM(m.postTime)}, ${t.list_item_model_design}: ${toHHMM(m.designTime / m.sales)}/${t.list_item_model_unit} (${t.list_item_model_sales}: ${m.sales})`; }, editFn: 'editModel', deleteFn: 'deleteModel' });
+  const updateHourlyRateList = () => updateList({ data: hourlyRates, selectId: 'hourly-rate-select', listId: 'hourly-rate-list', localStorageKey: 'hourlyRates', defaultOptionText: translations[currentLanguage].option_select, getSelectOption: h => `<option value="${h.id}">${h.name} (${h.rate} ${translations[currentLanguage].currency_symbol}/h)</option>`, getListItemText: (h, t) => `${h.name} - ${h.rate} ${t.currency_symbol}/h`, editFn: 'editHourlyRate', deleteFn: 'deleteHourlyRate' });
+  const updateElectricityPriceList = () => updateList({ data: electricityPrices, selectId: 'electricity-price-select', listId: 'electricity-price-list', localStorageKey: 'electricityPrices', defaultOptionText: translations[currentLanguage].option_select, getSelectOption: e => `<option value="${e.id}">${e.name} (${e.price} ${translations[currentLanguage].currency_symbol}/kWh)</option>`, getListItemText: (e, t) => `${e.name} - ${e.price} ${t.currency_symbol}/kWh`, editFn: 'editElectricityPrice', deleteFn: 'deleteElectricityPrice' });
+  window.checkMulticolorCompatibility = () => { const modelId = document.getElementById('model').value; const printerId = document.getElementById('printer').value; const warning = document.getElementById('multicolor-warning'); const printerSelect = document.getElementById('printer'); warning.classList.add('hidden'); const printerContainer = printerSelect.previousElementSibling; if (printerContainer && printerContainer.classList.contains('searchable-select-container')) { printerContainer.querySelector('.searchable-select-display').classList.remove('error-border'); } if (!modelId || !printerId) return; const model = models.find(m => m.id === modelId); const printer = printers.find(p => p.id === printerId); const t = translations[currentLanguage]; if (model && printer && model.isMulticolor) { if (!printer.isMulticolor) { warning.textContent = t.multicolor_warning_unsupported; warning.classList.remove('hidden'); printerContainer.querySelector('.searchable-select-display').classList.add('error-border'); } else if (printer.colorCount < model.filaments.length) { warning.textContent = t.multicolor_warning_insufficient_colors(printer.colorCount, model.filaments.length); warning.classList.remove('hidden'); printerContainer.querySelector('.searchable-select-display').classList.add('error-border'); } } };
+  
+  // ===================================================================================
+  // KORRIGIERT: fillModelData verwendet jetzt die korrekte Logik zum Erstellen
+  // der Filament-Optionen für Multicolor-Modelle im Kostenrechner.
+  // ===================================================================================
+  window.fillModelData = () => { const modelId = document.getElementById('model').value; const model = models.find(m => m.id === modelId); const filamentSection = document.getElementById('filament-section'); const filamentUsageSection = document.getElementById('filament-usage-section'); const multicolorSection = document.getElementById('multicolor-filaments'); const t = translations[currentLanguage]; checkMulticolorCompatibility(); if (model) { document.getElementById('print-time').value = toHHMM(model.printTime); document.getElementById('prep-time').value = toHHMM(model.prepTime); document.getElementById('post-time').value = toHHMM(model.postTime); document.getElementById('design-time').value = toHHMM(model.designTime / model.sales); if (model.isMulticolor) { filamentSection.classList.add('hidden'); filamentUsageSection.classList.add('hidden'); multicolorSection.classList.remove('hidden'); const filamentOptions = `<option value="">${t.option_select}</option>` + filaments.map(f => `<option value="${f.id}">${getFilamentDisplayText(f)}</option>`).join(''); multicolorSection.innerHTML = model.filaments.map((f, i) => `<div class="filament-entry space-y-2"> <label class="block font-semibold">${t.label_filament} ${i + 1}</label> <div class="flex items-center space-x-2"> <select class="multicolor-filament border p-2 w-full rounded flex-grow" onchange="updateColorPreview(this, this.nextElementSibling)"> ${filamentOptions} </select> <span class="w-8 h-8 border rounded-md dark:border-gray-600"></span> </div> <label class="block font-semibold mt-2">${t.label_filament_usage}</label> <input type="number" class="multicolor-filament-usage border p-2 w-full rounded" min="0" value="${f.usage}" /> </div>`).join('<hr class="my-4 border-gray-200 dark:border-gray-600">'); multicolorSection.querySelectorAll('.multicolor-filament').forEach(select => { createSearchableSelect(select); }); const entries = multicolorSection.querySelectorAll('.filament-entry'); model.filaments.forEach((filamentData, index) => { if (entries[index]) { const select = entries[index].querySelector('.multicolor-filament'); select.value = filamentData.filamentId; const container = select.previousElementSibling; if(container) { container.querySelector('.searchable-select-display').textContent = select.options[select.selectedIndex].text; } updateColorPreview(select, select.nextElementSibling); } }); } else { filamentSection.classList.remove('hidden'); filamentUsageSection.classList.remove('hidden'); multicolorSection.classList.add('hidden'); multicolorSection.innerHTML = ''; const filamentSelect = document.getElementById('filament'); filamentSelect.value = model.filaments[0]?.filamentId || ''; document.getElementById('filament-usage').value = model.filamentUsage; const filamentContainer = filamentSelect.previousElementSibling; if (filamentContainer) { filamentContainer.querySelector('.searchable-select-display').textContent = filamentSelect.options[filamentSelect.selectedIndex].text; } updateColorPreview(filamentSelect, 'filament-color-preview'); } } else { resetCalculator(); } };
+  
+  window.fillHourlyRate = () => { const rateId = document.getElementById('hourly-rate-select').value; const rate = hourlyRates.find(h => h.id === rateId); document.getElementById('hourly-rate').value = rate ? rate.rate : ''; };
+  window.fillElectricityPrice = () => { const priceId = document.getElementById('electricity-price-select').value; const price = electricityPrices.find(e => e.id === priceId); document.getElementById('electricity-price').value = price ? price.price : ''; };
   let editingPrinterId = null;
-  document.getElementById('printer-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('printer-name').value.trim();
-    const price = parseFloat(document.getElementById('printer-price').value);
-    const hours = parseFloat(document.getElementById('printer-hours').value);
-    const power = parseFloat(document.getElementById('printer-power').value);
-    const isMulticolor = document.getElementById('printer-multicolor').checked;
-    const colorCount = isMulticolor ? parseInt(document.getElementById('printer-color-count').value) : 0;
-
-    if (!name || isNaN(price) || price < 0 || isNaN(hours) || hours <= 0 || isNaN(power) || power < 0.01 || power > 2) {
-      alert('Bitte füllen Sie alle Felder korrekt aus (Preis ≥ 0, Stunden > 0, Stromaufnahme: 0,01–2 kW).');
-      return;
-    }
-
-    const printerData = { id: editingPrinterId || generateUUID(), name, price, hours, power, isMulticolor, colorCount };
-    if (editingPrinterId) {
-      printers[printers.findIndex(p => p.id === editingPrinterId)] = printerData;
-      editingPrinterId = null;
-      document.getElementById('printer-submit').textContent = 'Hinzufügen';
-    } else {
-      printers.push(printerData);
-    }
-    updatePrinterList();
-    document.getElementById('printer-form').reset();
-    togglePrinterMulticolor();
-  });
-
-  window.editPrinter = id => {
-    const printer = printers.find(p => p.id === id);
-    if (printer) {
-      editingPrinterId = id;
-      document.getElementById('printer-name').value = printer.name;
-      document.getElementById('printer-price').value = printer.price;
-      document.getElementById('printer-hours').value = printer.hours;
-      document.getElementById('printer-power').value = printer.power;
-      document.getElementById('printer-multicolor').checked = printer.isMulticolor;
-      document.getElementById('printer-color-count').value = printer.colorCount || 1;
-      togglePrinterMulticolor();
-      document.getElementById('printer-submit').textContent = 'Speichern';
-    }
-  };
-
-  window.deletePrinter = id => {
-    printers = printers.filter(p => p.id !== id);
-    updatePrinterList();
-  };
-
+  document.getElementById('printer-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const name = document.getElementById('printer-name').value.trim(); const price = parseFloat(document.getElementById('printer-price').value); const hours = parseFloat(document.getElementById('printer-hours').value); const power = parseFloat(document.getElementById('printer-power').value); const isMulticolor = document.getElementById('printer-multicolor').checked; const colorCount = isMulticolor ? parseInt(document.getElementById('printer-color-count').value) : 0; if (!name || isNaN(price) || price < 0 || isNaN(hours) || hours <= 0 || isNaN(power) || power < 0.01 || power > 2) { alert(t.alert_printer_form_invalid); return; } const printerData = { id: editingPrinterId || generateUUID(), name, price, hours, power, isMulticolor, colorCount }; if (editingPrinterId) { printers[printers.findIndex(p => p.id === editingPrinterId)] = printerData; editingPrinterId = null; document.getElementById('printer-submit').textContent = t.button_add; } else { printers.push(printerData); } updatePrinterList(); document.getElementById('printer-form').reset(); togglePrinterMulticolor(); });
+  window.editPrinter = id => { const t = translations[currentLanguage]; const printer = printers.find(p => p.id === id); if (printer) { editingPrinterId = id; document.getElementById('printer-name').value = printer.name; document.getElementById('printer-price').value = printer.price; document.getElementById('printer-hours').value = printer.hours; document.getElementById('printer-power').value = printer.power; document.getElementById('printer-multicolor').checked = printer.isMulticolor; document.getElementById('printer-color-count').value = printer.colorCount || 1; togglePrinterMulticolor(); document.getElementById('printer-submit').textContent = t.button_save; } };
+  window.deletePrinter = id => { printers = printers.filter(p => p.id !== id); updatePrinterList(); };
   let editingFilamentId = null;
-  document.getElementById('filament-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('filament-name').value.trim();
-    const color = document.getElementById('filament-color').value;
-    const metallic = document.getElementById('filament-metallic').value;
-    const gloss = document.getElementById('filament-gloss').value;
-    const price = parseFloat(document.getElementById('filament-price').value);
-
-    if (!name || isNaN(price) || price < 0) {
-      alert('Bitte füllen Sie alle Felder korrekt aus (Preis ≥ 0).');
-      return;
-    }
-
-    const filamentData = { id: editingFilamentId || generateUUID(), name, color, metallic, gloss, price };
-    if (editingFilamentId) {
-      filaments[filaments.findIndex(f => f.id === editingFilamentId)] = filamentData;
-      editingFilamentId = null;
-      document.getElementById('filament-submit').textContent = 'Hinzufügen';
-    } else {
-      filaments.push(filamentData);
-    }
-    updateFilamentList();
-    document.getElementById('filament-form').reset();
-    document.getElementById('filament-color').value = '#ff0000';
-    document.getElementById('filament-metallic').value = 'none';
-    document.getElementById('filament-gloss').value = 'matte';
-  });
-
-  window.editFilament = id => {
-    const filament = filaments.find(f => f.id === id);
-    if (filament) {
-      editingFilamentId = id;
-      document.getElementById('filament-name').value = filament.name;
-      document.getElementById('filament-color').value = filament.color;
-      document.getElementById('filament-metallic').value = filament.metallic;
-      document.getElementById('filament-gloss').value = filament.gloss;
-      document.getElementById('filament-price').value = filament.price;
-      document.getElementById('filament-submit').textContent = 'Speichern';
-    }
-  };
-
-  window.deleteFilament = id => {
-    filaments = filaments.filter(f => f.id !== id);
-    updateFilamentList();
-  };
-
+  document.getElementById('filament-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const name = document.getElementById('filament-name').value.trim(); const material = document.getElementById('filament-material').value; const color = document.getElementById('filament-color').value; const effect = document.getElementById('filament-effect').value; const gloss = document.getElementById('filament-gloss').value; const price = parseFloat(document.getElementById('filament-price').value); if (!name || isNaN(price) || price < 0) { alert(t.alert_filament_form_invalid); return; } const filamentData = { id: editingFilamentId || generateUUID(), name, material, color, effect, gloss, price }; if (editingFilamentId) { filaments[filaments.findIndex(f => f.id === editingFilamentId)] = filamentData; editingFilamentId = null; document.getElementById('filament-submit').textContent = t.button_add; } else { filaments.push(filamentData); } updateFilamentList(); document.getElementById('filament-form').reset(); const colorInput = document.getElementById('filament-color'); colorInput.value = '#ff0000'; colorInput.dispatchEvent(new Event('input')); document.getElementById('filament-material').value = 'PLA'; document.getElementById('filament-effect').value = 'none'; document.getElementById('filament-gloss').value = 'matte'; });
+  window.editFilament = id => { const t = translations[currentLanguage]; const filament = filaments.find(f => f.id === id); if (filament) { editingFilamentId = id; document.getElementById('filament-name').value = filament.name; document.getElementById('filament-material').value = filament.material; document.getElementById('filament-color').value = filament.color; document.getElementById('filament-color').dispatchEvent(new Event('input')); document.getElementById('filament-effect').value = filament.effect || 'none'; document.getElementById('filament-gloss').value = filament.gloss; document.getElementById('filament-price').value = filament.price; document.getElementById('filament-submit').textContent = t.button_save; } };
+  window.deleteFilament = id => { filaments = filaments.filter(f => f.id !== id); updateFilamentList(); };
   let editingModelId = null;
-  document.getElementById('model-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('model-name').value.trim();
-    const printTime = toDecimalHours(document.getElementById('model-print-time').value || '00:00');
-    const prepTime = toDecimalHours(document.getElementById('model-prep-time').value || '00:00');
-    const postTime = toDecimalHours(document.getElementById('model-post-time').value || '00:00');
-    const designTime = toDecimalHours(document.getElementById('model-design-time').value || '00:00');
-    const sales = parseInt(document.getElementById('model-sales').value);
-    const isMulticolor = document.getElementById('model-multicolor').checked;
-
-    let filamentData;
-    if (isMulticolor) {
-      filamentData = Array.from(document.querySelectorAll('#model-filaments .filament-entry')).map(entry => ({
-        filamentId: entry.querySelector('.model-filament').value,
-        usage: parseFloat(entry.querySelector('.model-filament-usage').value)
-      }));
-      if (!filamentData.every(f => f.filamentId && f.usage > 0)) {
-        alert('Bitte füllen Sie alle Filamentangaben korrekt aus (Filament auswählen, Verbrauch > 0).');
-        return;
-      }
-    } else {
-      const filamentId = document.querySelector('#model-filaments .model-filament').value;
-      const filamentUsage = parseFloat(document.querySelector('#model-filaments .model-filament-usage').value);
-      if (!filamentId || filamentUsage <= 0) {
-        alert('Bitte geben Sie ein Filament und einen Verbrauch > 0 an.');
-        return;
-      }
-      filamentData = [{ filamentId, usage: filamentUsage }];
-    }
-
-    if (!name || printTime <= 0 || sales < 1) {
-      alert('Bitte füllen Sie alle Pflichtfelder korrekt aus (Name, Druckzeit > 0, Verkäufe ≥ 1).');
-      return;
-    }
-
-    const modelData = {
-      id: editingModelId || generateUUID(),
-      name,
-      printTime,
-      prepTime,
-      postTime,
-      designTime,
-      sales,
-      isMulticolor,
-      filaments: isMulticolor ? filamentData : [],
-      filamentUsage: isMulticolor ? 0 : filamentData[0].usage
-    };
-
-    if (editingModelId) {
-      models[models.findIndex(m => m.id === editingModelId)] = modelData;
-      editingModelId = null;
-      document.getElementById('model-submit').textContent = 'Hinzufügen';
-    } else {
-      models.push(modelData);
-    }
-    updateModelList();
-    document.getElementById('model-form').reset();
-    document.getElementById('model-sales').value = 1;
-    document.getElementById('model-multicolor').checked = false;
-    toggleModelMulticolor();
-  });
-
-  window.editModel = id => {
-    const model = models.find(m => m.id === id);
-    if (model) {
-      editingModelId = id;
-      document.getElementById('model-name').value = model.name;
-      document.getElementById('model-print-time').value = toHHMM(model.printTime);
-      document.getElementById('model-prep-time').value = toHHMM(model.prepTime);
-      document.getElementById('model-post-time').value = toHHMM(model.postTime);
-      document.getElementById('model-design-time').value = toHHMM(model.designTime);
-      document.getElementById('model-sales').value = model.sales;
-      document.getElementById('model-multicolor').checked = model.isMulticolor;
-      document.getElementById('model-color-count').value = model.filaments.length || 1;
-      toggleModelMulticolor();
-      updateModelFilaments();
-      if (model.isMulticolor) {
-        const entries = document.querySelectorAll('#model-filaments .filament-entry');
-        model.filaments.forEach((f, i) => {
-          if (entries[i]) {
-            entries[i].querySelector('.model-filament').value = f.filamentId;
-            entries[i].querySelector('.model-filament-usage').value = f.usage;
-          }
-        });
-      } else {
-        const entry = document.querySelector('#model-filaments .filament-entry');
-        entry.querySelector('.model-filament').value = model.filaments[0]?.filamentId || '';
-        entry.querySelector('.model-filament-usage').value = model.filamentUsage;
-      }
-      document.getElementById('model-submit').textContent = 'Speichern';
-    }
-  };
-
-  window.deleteModel = id => {
-    models = models.filter(m => m.id !== id);
-    updateModelList();
-  };
-
+  document.getElementById('model-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const name = document.getElementById('model-name').value.trim(); const printTime = toDecimalHours(document.getElementById('model-print-time').value); const prepTime = toDecimalHours(document.getElementById('model-prep-time').value); const postTime = toDecimalHours(document.getElementById('model-post-time').value); const designTime = toDecimalHours(document.getElementById('model-design-time').value); const sales = parseInt(document.getElementById('model-sales').value); const isMulticolor = document.getElementById('model-multicolor').checked; let filamentsData = []; let totalUsage = 0; try { if (isMulticolor) { filamentsData = Array.from(document.querySelectorAll('#model-filaments .filament-entry')).map(entry => { const filamentId = entry.querySelector('.model-filament').value; const usage = parseFloat(entry.querySelector('.model-filament-usage').value); if (!filamentId || isNaN(usage) || usage <= 0) { throw new Error(t.alert_model_form_invalid_multicolor); } totalUsage += usage; return { filamentId, usage }; }); } else { const filamentId = document.querySelector('#model-filaments .model-filament').value; const usage = parseFloat(document.querySelector('#model-filaments .model-filament-usage').value); if (!filamentId || isNaN(usage) || usage <= 0) { throw new Error(t.alert_model_form_invalid_singlecolor); } totalUsage = usage; filamentsData.push({ filamentId, usage }); } if (!name || printTime <= 0 || sales < 1) { throw new Error(t.alert_model_form_invalid_general); } const modelData = { id: editingModelId || generateUUID(), name, printTime, prepTime, postTime, designTime, sales, isMulticolor, filaments: filamentsData, filamentUsage: isMulticolor ? totalUsage : filamentsData[0].usage, }; if (editingModelId) { models[models.findIndex(m => m.id === editingModelId)] = modelData; editingModelId = null; document.getElementById('model-submit').textContent = t.button_add; } else { models.push(modelData); } updateModelList(); document.getElementById('model-form').reset(); document.getElementById('model-sales').value = 1; document.getElementById('model-multicolor').checked = false; toggleModelMulticolor(); } catch (error) { alert(error.message); } });
+  window.editModel = id => { const t = translations[currentLanguage]; const model = models.find(m => m.id === id); if (model) { editingModelId = id; document.getElementById('model-name').value = model.name; document.getElementById('model-print-time').value = toHHMM(model.printTime); document.getElementById('model-prep-time').value = toHHMM(model.prepTime); document.getElementById('model-post-time').value = toHHMM(model.postTime); document.getElementById('model-design-time').value = toHHMM(model.designTime); document.getElementById('model-sales').value = model.sales; document.getElementById('model-multicolor').checked = model.isMulticolor; document.getElementById('model-color-count').value = model.filaments.length || 1; toggleModelMulticolor(); setTimeout(() => { if (model.isMulticolor) { const entries = document.querySelectorAll('#model-filaments .filament-entry'); model.filaments.forEach((f, i) => { if (entries[i]) { const select = entries[i].querySelector('.model-filament'); select.value = f.filamentId; entries[i].querySelector('.model-filament-usage').value = f.usage; const container = select.previousElementSibling; if(container) container.querySelector('.searchable-select-display').textContent = select.options[select.selectedIndex].text; } }); } else { const entry = document.querySelector('#model-filaments .filament-entry'); const select = entry.querySelector('.model-filament'); select.value = model.filaments[0]?.filamentId || ''; entry.querySelector('.model-filament-usage').value = model.filamentUsage; const container = select.previousElementSibling; if(container) container.querySelector('.searchable-select-display').textContent = select.options[select.selectedIndex].text; } }, 0); document.getElementById('model-submit').textContent = t.button_save; } };
+  window.deleteModel = id => { models = models.filter(m => m.id !== id); updateModelList(); };
   let editingHourlyRateId = null;
-  document.getElementById('hourly-rate-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('hourly-rate-name').value.trim();
-    const rate = parseFloat(document.getElementById('hourly-rate-value').value);
-
-    if (!name || isNaN(rate) || rate < 0) {
-      alert('Bitte füllen Sie alle Felder korrekt aus (Satz ≥ 0).');
-      return;
-    }
-
-    const rateData = { id: editingHourlyRateId || generateUUID(), name, rate };
-    if (editingHourlyRateId) {
-      hourlyRates[hourlyRates.findIndex(h => h.id === editingHourlyRateId)] = rateData;
-      editingHourlyRateId = null;
-      document.getElementById('hourly-rate-submit').textContent = 'Hinzufügen';
-    } else {
-      hourlyRates.push(rateData);
-    }
-    updateHourlyRateList();
-    document.getElementById('hourly-rate-form').reset();
-  });
-
-  window.editHourlyRate = id => {
-    const rate = hourlyRates.find(h => h.id === id);
-    if (rate) {
-      editingHourlyRateId = id;
-      document.getElementById('hourly-rate-name').value = rate.name;
-      document.getElementById('hourly-rate-value').value = rate.rate;
-      document.getElementById('hourly-rate-submit').textContent = 'Speichern';
-    }
-  };
-
-  window.deleteHourlyRate = id => {
-    hourlyRates = hourlyRates.filter(h => h.id !== id);
-    updateHourlyRateList();
-  };
-
+  document.getElementById('hourly-rate-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const name = document.getElementById('hourly-rate-name').value.trim(); const rate = parseFloat(document.getElementById('hourly-rate-value').value); if (!name || isNaN(rate) || rate < 0) { alert(t.alert_hourly_rate_form_invalid); return; } const rateData = { id: editingHourlyRateId || generateUUID(), name, rate }; if (editingHourlyRateId) { hourlyRates[hourlyRates.findIndex(h => h.id === editingHourlyRateId)] = rateData; editingHourlyRateId = null; document.getElementById('hourly-rate-submit').textContent = t.button_add; } else { hourlyRates.push(rateData); } updateHourlyRateList(); document.getElementById('hourly-rate-form').reset(); });
+  window.editHourlyRate = id => { const t = translations[currentLanguage]; const rate = hourlyRates.find(h => h.id === id); if (rate) { editingHourlyRateId = id; document.getElementById('hourly-rate-name').value = rate.name; document.getElementById('hourly-rate-value').value = rate.rate; document.getElementById('hourly-rate-submit').textContent = t.button_save; } };
+  window.deleteHourlyRate = id => { hourlyRates = hourlyRates.filter(h => h.id !== id); updateHourlyRateList(); };
   let editingElectricityPriceId = null;
-  document.getElementById('electricity-price-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('electricity-price-name').value.trim();
-    const price = parseFloat(document.getElementById('electricity-price-value').value);
-
-    if (!name || isNaN(price) || price < 0.01 || price > 1) {
-      alert('Bitte füllen Sie alle Felder korrekt aus (Preis: 0,01–1 €/kWh).');
-      return;
-    }
-
-    const priceData = { id: editingElectricityPriceId || generateUUID(), name, price };
-    if (editingElectricityPriceId) {
-      electricityPrices[electricityPrices.findIndex(e => e.id === editingElectricityPriceId)] = priceData;
-      editingElectricityPriceId = null;
-      document.getElementById('electricity-price-submit').textContent = 'Hinzufügen';
-    } else {
-      electricityPrices.push(priceData);
-    }
-    updateElectricityPriceList();
-    document.getElementById('electricity-price-form').reset();
-  });
-
-  window.editElectricityPrice = id => {
-    const price = electricityPrices.find(e => e.id === id);
-    if (price) {
-      editingElectricityPriceId = id;
-      document.getElementById('electricity-price-name').value = price.name;
-      document.getElementById('electricity-price-value').value = price.price;
-      document.getElementById('electricity-price-submit').textContent = 'Speichern';
-    }
-  };
-
-  window.deleteElectricityPrice = id => {
-    electricityPrices = electricityPrices.filter(e => e.id !== id);
-    updateElectricityPriceList();
-  };
-
-  window.resetCalculator = () => {
-    document.getElementById('calc-form').reset();
-    document.getElementById('result').classList.add('hidden');
-    document.getElementById('multicolor-warning').classList.add('hidden');
-    document.getElementById('printer').classList.remove('error-border');
-    document.getElementById('filament-section').classList.remove('hidden');
-    document.getElementById('filament-usage').classList.remove('hidden');
-    document.getElementById('multicolor-filaments').classList.add('hidden');
-    document.getElementById('failure-rate').value = 10;
-  };
-
-  document.getElementById('calc-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const modelId = document.getElementById('model').value;
-    const printerId = document.getElementById('printer').value;
-    const warning = document.getElementById('multicolor-warning');
-    const printerSelect = document.getElementById('printer');
-    warning.classList.add('hidden');
-    printerSelect.classList.remove('error-border');
-
-    const model = models.find(m => m.id === modelId);
-    const printer = printers.find(p => p.id === printerId);
-
-    if (!printerId) {
-      alert('Bitte wählen Sie einen Drucker aus.');
-      return;
-    }
-
-    if (model && model.isMulticolor) {
-      if (!printer.isMulticolor) {
-        warning.textContent = 'Der ausgewählte Drucker unterstützt keinen Multicolor-Druck.';
-        warning.classList.remove('hidden');
-        printerSelect.classList.add('error-border');
-        return;
-      } else if (printer.colorCount < model.filaments.length) {
-        warning.textContent = `Der ausgewählte Drucker unterstützt nur ${printer.colorCount} Farben. Dieses Modell benötigt ${model.filaments.length} Farben.`;
-        warning.classList.remove('hidden');
-        printerSelect.classList.add('error-border');
-        return;
-      }
-    }
-
-    const printTime = toDecimalHours(document.getElementById('print-time').value || '00:00');
-    const prepTime = toDecimalHours(document.getElementById('prep-time').value || '00:00');
-    const postTime = toDecimalHours(document.getElementById('post-time').value || '00:00');
-    const designTime = toDecimalHours(document.getElementById('design-time').value || '00:00');
-    const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0;
-    const electricityPrice = parseFloat(document.getElementById('electricity-price').value) || 0;
-    const failureRate = parseFloat(document.getElementById('failure-rate').value) || 0;
-
-    if (printTime <= 0) {
-      alert('Bitte geben Sie eine Druckzeit größer als 0 ein.');
-      return;
-    }
-
-    let totalFilamentCost = 0;
-    if (model && model.isMulticolor) {
-      const filamentData = Array.from(document.querySelectorAll('#multicolor-filaments .filament-entry')).map(entry => ({
-        filamentId: entry.querySelector('.multicolor-filament').value,
-        usage: parseFloat(entry.querySelector('.multicolor-filament-usage').value)
-      }));
-
-      if (!filamentData.every(f => f.filamentId && f.usage > 0)) {
-        alert('Bitte geben Sie für alle Filamente einen Verbrauch > 0 an.');
-        return;
-      }
-
-      filamentData.forEach(f => {
-        const filament = filaments.find(fil => fil.id === f.filamentId);
-        if (filament) totalFilamentCost += (f.usage * filament.price) / 1000;
-      });
-    } else {
-      const filamentId = document.getElementById('filament').value;
-      const filamentUsage = parseFloat(document.getElementById('filament-usage').value) || 0;
-
-      if (!filamentId) {
-        alert('Bitte wählen Sie ein Filament aus.');
-        return;
-      }
-      if (filamentUsage <= 0) {
-        alert('Bitte geben Sie einen Filamentverbrauch > 0 an.');
-        return;
-      }
-
-      const filament = filaments.find(f => f.id === filamentId);
-      if (filament) totalFilamentCost = (filamentUsage * filament.price) / 1000;
-    }
-
-    const depreciationCost = (printer.price / printer.hours) * printTime;
-    const electricityCost = printer.power * printTime * electricityPrice;
-    const laborCost = (prepTime + postTime + designTime) * hourlyRate;
-    const subtotal = depreciationCost + electricityCost + totalFilamentCost + laborCost;
-    const failureCost = subtotal * (failureRate / 100);
-    const totalCost = subtotal + failureCost;
-
-    document.getElementById('depreciation').textContent = depreciationCost.toFixed(2);
-    document.getElementById('electricity').textContent = electricityCost.toFixed(2);
-    document.getElementById('filament-cost').textContent = totalFilamentCost.toFixed(2);
-    document.getElementById('labor').textContent = laborCost.toFixed(2);
-    document.getElementById('failure').textContent = failureCost.toFixed(2);
-    document.getElementById('total').textContent = totalCost.toFixed(2);
-    document.getElementById('result').classList.remove('hidden');
-  });
-
-  // Funktion zum Speichern der Daten als JSON-Datei
-  document.getElementById('save-data-btn').addEventListener('click', () => {
-    const data = {
-      printers: printers,
-      filaments: filaments,
-      models: models,
-      hourlyRates: hourlyRates,
-      electricityPrices: electricityPrices
-    };
-    const dataStr = JSON.stringify(data, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `3D_Print_Master_Data_${new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '_')}_${new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }).replace(/:/g, '_')}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    burgerMenu.classList.remove('open');
-  });
-
-  // Funktion zum Laden der Daten aus einer JSON-Datei
-  document.getElementById('load-data-input').addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // Bestätigung vor dem Laden der Daten anzeigen
-    const confirmLoad = window.confirm('Achtung: Das Laden einer Datei wird alle aktuellen Daten überschreiben. Möchten Sie fortfahren?');
-    if (!confirmLoad) {
-      event.target.value = ''; // Datei-Input zurücksetzen
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const loadedData = JSON.parse(e.target.result);
-
-        // Validierung der geladenen Daten
-        if (!loadedData.printers || !Array.isArray(loadedData.printers) ||
-            !loadedData.filaments || !Array.isArray(loadedData.filaments) ||
-            !loadedData.models || !Array.isArray(loadedData.models) ||
-            !loadedData.hourlyRates || !Array.isArray(loadedData.hourlyRates) ||
-            !loadedData.electricityPrices || !Array.isArray(loadedData.electricityPrices)) {
-          throw new Error('Ungültiges Dateiformat: Die Datei enthält nicht die erwarteten Daten.');
-        }
-
-        // Aktualisiere die globalen Variablen mit den geladenen Daten
-        printers = loadedData.printers;
-        filaments = loadedData.filaments;
-        models = loadedData.models;
-        hourlyRates = loadedData.hourlyRates;
-        electricityPrices = loadedData.electricityPrices;
-
-        // Speichere die geladenen Daten in localStorage
-        localStorage.setItem('printers', JSON.stringify(printers));
-        localStorage.setItem('filaments', JSON.stringify(filaments));
-        localStorage.setItem('models', JSON.stringify(models));
-        localStorage.setItem('hourlyRates', JSON.stringify(hourlyRates));
-        localStorage.setItem('electricityPrices', JSON.stringify(electricityPrices));
-
-        // Aktualisiere die UI-Listen
-        updatePrinterList();
-        updateFilamentList();
-        updateModelList();
-        updateHourlyRateList();
-        updateElectricityPriceList();
-
-        // Schließe das Burger-Menü
-        burgerMenu.classList.remove('open');
-
-        // Datei-Input-Feld zurücksetzen
-        event.target.value = '';
-
-        alert('Daten erfolgreich geladen!');
-      } catch (error) {
-        console.error('Fehler beim Laden der Datei:', error);
-        alert('Fehler beim Laden der Datei: ' + error.message);
-      }
-    };
-    reader.onerror = () => {
-      alert('Fehler beim Lesen der Datei.');
-    };
-    reader.readAsText(file);
-  });
-
-  updatePrinterList();
-  updateFilamentList();
-  updateModelList();
-  updateHourlyRateList();
-  updateElectricityPriceList();
+  document.getElementById('electricity-price-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const name = document.getElementById('electricity-price-name').value.trim(); const price = parseFloat(document.getElementById('electricity-price-value').value); if (!name || isNaN(price) || price < 0.01 || price > 1) { alert(t.alert_electricity_price_form_invalid); return; } const priceData = { id: editingElectricityPriceId || generateUUID(), name, price }; if (editingElectricityPriceId) { electricityPrices[electricityPrices.findIndex(e => e.id === editingElectricityPriceId)] = priceData; editingElectricityPriceId = null; document.getElementById('electricity-price-submit').textContent = t.button_add; } else { electricityPrices.push(priceData); } updateElectricityPriceList(); document.getElementById('electricity-price-form').reset(); });
+  window.editElectricityPrice = id => { const t = translations[currentLanguage]; const price = electricityPrices.find(e => e.id === id); if (price) { editingElectricityPriceId = id; document.getElementById('electricity-price-name').value = price.name; document.getElementById('electricity-price-value').value = price.price; document.getElementById('electricity-price-submit').textContent = t.button_save; } };
+  window.deleteElectricityPrice = id => { electricityPrices = electricityPrices.filter(e => e.id !== id); updateElectricityPriceList(); };
+  window.resetCalculator = () => { document.getElementById('calc-form').reset(); document.getElementById('result').classList.add('hidden'); document.getElementById('multicolor-warning').classList.add('hidden'); ['model', 'printer', 'filament'].forEach(id => { const select = document.getElementById(id); const container = select.previousElementSibling; if(container && container.classList.contains('searchable-select-container')) { container.querySelector('.searchable-select-display').textContent = select.options[0].text; container.querySelector('.searchable-select-display').classList.remove('error-border'); } }); document.getElementById('filament-section').classList.remove('hidden'); document.getElementById('filament-usage-section').classList.remove('hidden'); document.getElementById('multicolor-filaments').classList.add('hidden'); document.getElementById('multicolor-filaments').innerHTML = ''; document.getElementById('failure-rate').value = 10; updateColorPreview(document.getElementById('filament'), 'filament-color-preview'); };
+  document.getElementById('calc-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const printerId = document.getElementById('printer').value; const printer = printers.find(p => p.id === printerId); if (!printer) { alert(t.alert_select_printer); return; } checkMulticolorCompatibility(); if (!document.getElementById('multicolor-warning').classList.contains('hidden')) return; const printTime = toDecimalHours(document.getElementById('print-time').value); if (printTime <= 0) { alert(t.alert_print_time_zero); return; } let totalFilamentCost = 0; try { const isMulticolorActive = !document.getElementById('multicolor-filaments').classList.contains('hidden'); if (isMulticolorActive) { const filamentData = Array.from(document.querySelectorAll('#multicolor-filaments .filament-entry')).map(entry => { const filamentId = entry.querySelector('.multicolor-filament').value; const usage = parseFloat(entry.querySelector('.model-filament-usage').value); if (!filamentId || isNaN(usage) || usage <= 0) throw new Error(t.alert_multicolor_usage_zero); return { filamentId, usage }; }); filamentData.forEach(f => { const filament = filaments.find(fil => fil.id === f.filamentId); if (filament) totalFilamentCost += (f.usage * filament.price) / 1000; }); } else { const filamentId = document.getElementById('filament').value; const filamentUsage = parseFloat(document.getElementById('filament-usage').value); if (!filamentId) throw new Error(t.alert_select_filament); if (isNaN(filamentUsage) || filamentUsage <= 0) throw new Error(t.alert_filament_usage_zero); const filament = filaments.find(f => f.id === filamentId); if (filament) totalFilamentCost = (filamentUsage * filament.price) / 1000; } } catch (error) { alert(error.message); return; } const prepTime = toDecimalHours(document.getElementById('prep-time').value); const postTime = toDecimalHours(document.getElementById('post-time').value); const designTime = toDecimalHours(document.getElementById('design-time').value); const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0; const electricityPrice = parseFloat(document.getElementById('electricity-price').value) || 0; const failureRate = parseFloat(document.getElementById('failure-rate').value) || 0; const depreciationCost = (printer.price / printer.hours) * printTime; const electricityCost = printer.power * printTime * electricityPrice; const laborCost = (prepTime + postTime + designTime) * hourlyRate; const subtotal = depreciationCost + electricityCost + totalFilamentCost + laborCost; const failureCost = subtotal * (failureRate / 100); const totalCost = subtotal + failureCost; document.getElementById('depreciation').textContent = depreciationCost.toFixed(2); document.getElementById('electricity').textContent = electricityCost.toFixed(2); document.getElementById('filament-cost').textContent = totalFilamentCost.toFixed(2); document.getElementById('labor').textContent = laborCost.toFixed(2); document.getElementById('failure').textContent = failureCost.toFixed(2); document.getElementById('total').textContent = totalCost.toFixed(2); document.getElementById('result').classList.remove('hidden'); });
+  document.getElementById('save-data-btn').addEventListener('click', () => { const data = { printers, filaments, models, hourlyRates, electricityPrices }; const dataStr = JSON.stringify(data, null, 2); const blob = new Blob([dataStr], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `3D_Print_Master_Data_${new Date().toISOString().slice(0, 10)}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); burgerMenu.classList.remove('open'); });
+  document.getElementById('load-data-input').addEventListener('change', (event) => { const file = event.target.files[0]; if (!file) return; const t = translations[currentLanguage]; const confirmLoad = window.confirm(t.confirm_load_data); if (!confirmLoad) { event.target.value = ''; return; } const reader = new FileReader(); reader.onload = (e) => { try { const loadedData = JSON.parse(e.target.result); if (loadedData.filaments && Array.isArray(loadedData.filaments)) { loadedData.filaments.forEach(f => { if (f.metallic && typeof f.effect === 'undefined') { if (f.metallic === 'gold') f.effect = 'metallic_gold'; else if (f.metallic === 'silver') f.effect = 'metallic_silver'; else f.effect = 'none'; delete f.metallic; } }); } if (!loadedData.printers || !Array.isArray(loadedData.printers) || !loadedData.filaments || !Array.isArray(loadedData.filaments) || !loadedData.models || !Array.isArray(loadedData.models) || !loadedData.hourlyRates || !Array.isArray(loadedData.hourlyRates) || !loadedData.electricityPrices || !Array.isArray(loadedData.electricityPrices)) { throw new Error(t.alert_load_data_invalid_format); } printers = loadedData.printers; filaments = loadedData.filaments; models = loadedData.models; hourlyRates = loadedData.hourlyRates; electricityPrices = loadedData.electricityPrices; localStorage.setItem('printers', JSON.stringify(printers)); localStorage.setItem('filaments', JSON.stringify(filaments)); localStorage.setItem('models', JSON.stringify(models)); localStorage.setItem('hourlyRates', JSON.stringify(hourlyRates)); localStorage.setItem('electricityPrices', JSON.stringify(electricityPrices)); updateAllLists(); burgerMenu.classList.remove('open'); event.target.value = ''; alert(t.alert_load_data_success); } catch (error) { console.error('Fehler beim Laden der Datei:', error); alert(t.alert_load_data_error + error.message); } }; reader.onerror = () => alert(t.alert_read_file_error); reader.readAsText(file); });
+  const languageSelect = document.getElementById('language-select');
+  languageSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+  const savedLang = localStorage.getItem('userLanguage') || navigator.language.split('-')[0];
+  const initialLang = translations[savedLang] ? savedLang : 'de';
+  languageSelect.value = initialLang;
+  setLanguage(initialLang);
+  createSearchableSelect(document.getElementById('model'));
+  createSearchableSelect(document.getElementById('printer'));
+  createSearchableSelect(document.getElementById('filament'));
+  updateModelFilaments();
+  const newFilamentColorInput = document.getElementById('filament-color');
+  const newFilamentColorHexInput = document.getElementById('filament-color-hex');
+  const newFilamentColorPreview = document.getElementById('new-filament-color-preview');
+  newFilamentColorInput.addEventListener('input', (e) => { const newColor = e.target.value; newFilamentColorHexInput.value = newColor.toUpperCase(); newFilamentColorPreview.style.backgroundColor = newColor; });
+  newFilamentColorHexInput.addEventListener('input', (e) => { const newHex = e.target.value; if (/^#[0-9a-fA-F]{6}$/.test(newHex)) { newFilamentColorInput.value = newHex; newFilamentColorPreview.style.backgroundColor = newHex; } });
+  newFilamentColorHexInput.value = newFilamentColorInput.value.toUpperCase();
 });

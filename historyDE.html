@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Versionsverlauf - 3D-Print Master</title> <script src="https://cdn.tailwindcss.com"></script> <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
+  <style>:root { --text-color-light: #333; --bg-color-light: #f9fafb; --container-bg-light: #ffffff; } [data-theme="dark"] { --text-color-dark: #e5e7eb; --bg-color-dark: #111827; --container-bg-dark: #1f2937; } body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .dark-mode-text { color: var(--text-color-dark); } .light-mode-text { color: var(--text-color-light); } [data-theme="dark"] body { background-color: var(--bg-color-dark); color: var(--text-color-dark); } [data-theme="light"] body { background-color: var(--bg-color-light); color: var(--text-color-light); } [data-theme="dark"] .content-container { background-color: var(--container-bg-dark); } [data-theme="light"] .content-container { background-color: var(--container-bg-light); }</style>
+</head>
+<body>
+  <div class="max-w-4xl mx-auto p-4">
+    <div class="flex items-center justify-between mb-6"> <div class="flex items-center justify-start"> <img src="3D_Print_Master_Logo.png" alt="Logo" class="w-12 h-12 mr-4"> <h1 class="text-2xl font-bold">Versionsverlauf</h1> </div> </div>
+    <div class="content-container p-6 rounded-lg shadow-md">
+      <table class="w-full text-left">
+        <thead class="border-b-2 dark:border-gray-600">
+          <tr>
+            <th class="p-2 w-24">Version</th>
+            <th class="p-2 w-32">Datum</th>
+            <th class="p-2">Beschreibung der Änderungen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- HIER NEUE EINTRÄGE IMMER OBEN HINZUFÜGEN -->
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1018</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung Versionsverlauf, Position im Burger-Menü.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1017</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der englischen Anleitung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1016</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der deutschen Anleitung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1015</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Anleitungs-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1014</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten "Spend a Coffee"-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1013</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Impressum-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1012</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Anpassung der Zeiteingabe & Wiederherstellung der Multicolor-Berechnung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1011</td><td class="p-2 align-top">24.05.2024</td><td class="p-2">Anpassung der Angabe von Zeiten auf ein modernes Eingabefeld.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1010</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Erweiterung der Farbauswahl um direkte HEX-Code-Eingabe.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1009</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Korrektur der Farbvorschau beim Anlegen neuer Filamente.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1008</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Implementierung sprachabhängiger Währungssymbole (€/$) in der gesamten Anwendung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1007</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Umstellung von "Metallic" auf "Effekte" mit neuen Optionen & Fehlerbehebung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1006</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Erweiterung der Filamente um "Material" und Anzeige aller Details in den Dropdowns.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1005</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Suchfunktion für dynamisch erstellte Filament-Felder implementiert.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1004</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>START:</b> Suchfunktion in den Dropdowns für Modell, Drucker und Filament integriert.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1003</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Wiederherstellung der Berechnungsfunktion nach Modellauswahl.</td></tr>
+        </tbody>
+      </table>
+      <a href="index.html" class="inline-block mt-8 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"> ← Zurück zum Rechner </a>
+    </div>
+  </div>
+  <script>(() => { const theme = localStorage.getItem('theme') || 'system'; if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })();</script>
+</body>
+</html>
