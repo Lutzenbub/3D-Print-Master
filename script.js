@@ -94,81 +94,32 @@ document.addEventListener('DOMContentLoaded', () => {
   window.editElectricityPrice = id => { const t = translations[currentLanguage]; const price = electricityPrices.find(e => e.id === id); if (price) { editingElectricityPriceId = id; document.getElementById('electricity-price-name').value = price.name; document.getElementById('electricity-price-value').value = price.price; document.getElementById('electricity-price-submit').textContent = t.button_save; } };
   window.deleteElectricityPrice = id => { electricityPrices = electricityPrices.filter(e => e.id !== id); updateElectricityPriceList(); };
   window.resetCalculator = () => { document.getElementById('calc-form').reset(); document.getElementById('result').classList.add('hidden'); document.getElementById('multicolor-warning').classList.add('hidden'); ['model', 'printer', 'filament'].forEach(id => { const select = document.getElementById(id); const container = select.previousElementSibling; if(container && container.classList.contains('searchable-select-container')) { container.querySelector('.searchable-select-display').textContent = select.options[0].text; container.querySelector('.searchable-select-display').classList.remove('error-border'); } }); document.getElementById('filament-section').classList.remove('hidden'); document.getElementById('filament-usage-section').classList.remove('hidden'); document.getElementById('multicolor-filaments').classList.add('hidden'); document.getElementById('multicolor-filaments').innerHTML = ''; document.getElementById('failure-rate').value = 10; updateColorPreview(document.getElementById('filament'), 'filament-color-preview'); };
-  
-  document.getElementById('calc-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const t = translations[currentLanguage];
-    const printerId = document.getElementById('printer').value;
-    const printer = printers.find(p => p.id === printerId);
-    if (!printer) { alert(t.alert_select_printer); return; }
-    checkMulticolorCompatibility();
-    if (!document.getElementById('multicolor-warning').classList.contains('hidden')) return;
-    const printTime = toDecimalHours(document.getElementById('print-time').value);
-    if (printTime <= 0) { alert(t.alert_print_time_zero); return; }
-    let totalFilamentCost = 0;
-    try {
-      const isMulticolorActive = !document.getElementById('multicolor-filaments').classList.contains('hidden');
-      if (isMulticolorActive) {
-        const filamentData = Array.from(document.querySelectorAll('#multicolor-filaments .filament-entry')).map(entry => {
-          const filamentId = entry.querySelector('.multicolor-filament').value;
-          // KORREKTUR: Hier wurde der falsche Klassenname für das Input-Feld verwendet.
-          const usage = parseFloat(entry.querySelector('.multicolor-filament-usage').value);
-          if (!filamentId || isNaN(usage) || usage <= 0) throw new Error(t.alert_multicolor_usage_zero);
-          return { filamentId, usage };
-        });
-        filamentData.forEach(f => {
-          const filament = filaments.find(fil => fil.id === f.filamentId);
-          if (filament) totalFilamentCost += (f.usage * filament.price) / 1000;
-        });
-      } else {
-        const filamentId = document.getElementById('filament').value;
-        const filamentUsage = parseFloat(document.getElementById('filament-usage').value);
-        if (!filamentId) throw new Error(t.alert_select_filament);
-        if (isNaN(filamentUsage) || filamentUsage <= 0) throw new Error(t.alert_filament_usage_zero);
-        const filament = filaments.find(f => f.id === filamentId);
-        if (filament) totalFilamentCost = (filamentUsage * filament.price) / 1000;
-      }
-    } catch (error) {
-      alert(error.message);
-      return;
-    }
-    const prepTime = toDecimalHours(document.getElementById('prep-time').value);
-    const postTime = toDecimalHours(document.getElementById('post-time').value);
-    const designTime = toDecimalHours(document.getElementById('design-time').value);
-    const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0;
-    const electricityPrice = parseFloat(document.getElementById('electricity-price').value) || 0;
-    const failureRate = parseFloat(document.getElementById('failure-rate').value) || 0;
-    const depreciationCost = (printer.price / printer.hours) * printTime;
-    const electricityCost = printer.power * printTime * electricityPrice;
-    const laborCost = (prepTime + postTime + designTime) * hourlyRate;
-    const subtotal = depreciationCost + electricityCost + totalFilamentCost + laborCost;
-    const failureCost = subtotal * (failureRate / 100);
-    const totalCost = subtotal + failureCost;
-    document.getElementById('depreciation').textContent = depreciationCost.toFixed(2);
-    document.getElementById('electricity').textContent = electricityCost.toFixed(2);
-    document.getElementById('filament-cost').textContent = totalFilamentCost.toFixed(2);
-    document.getElementById('labor').textContent = laborCost.toFixed(2);
-    document.getElementById('failure').textContent = failureCost.toFixed(2);
-    document.getElementById('total').textContent = totalCost.toFixed(2);
-    document.getElementById('result').classList.remove('hidden');
-  });
-  
+  document.getElementById('calc-form').addEventListener('submit', e => { e.preventDefault(); const t = translations[currentLanguage]; const printerId = document.getElementById('printer').value; const printer = printers.find(p => p.id === printerId); if (!printer) { alert(t.alert_select_printer); return; } checkMulticolorCompatibility(); if (!document.getElementById('multicolor-warning').classList.contains('hidden')) return; const printTime = toDecimalHours(document.getElementById('print-time').value); if (printTime <= 0) { alert(t.alert_print_time_zero); return; } let totalFilamentCost = 0; try { const isMulticolorActive = !document.getElementById('multicolor-filaments').classList.contains('hidden'); if (isMulticolorActive) { const filamentData = Array.from(document.querySelectorAll('#multicolor-filaments .filament-entry')).map(entry => { const filamentId = entry.querySelector('.multicolor-filament').value; const usage = parseFloat(entry.querySelector('.multicolor-filament-usage').value); if (!filamentId || isNaN(usage) || usage <= 0) throw new Error(t.alert_multicolor_usage_zero); return { filamentId, usage }; }); filamentData.forEach(f => { const filament = filaments.find(fil => fil.id === f.filamentId); if (filament) totalFilamentCost += (f.usage * filament.price) / 1000; }); } else { const filamentId = document.getElementById('filament').value; const filamentUsage = parseFloat(document.getElementById('filament-usage').value); if (!filamentId) throw new Error(t.alert_select_filament); if (isNaN(filamentUsage) || filamentUsage <= 0) throw new Error(t.alert_filament_usage_zero); const filament = filaments.find(f => f.id === filamentId); if (filament) totalFilamentCost = (filamentUsage * filament.price) / 1000; } } catch (error) { alert(error.message); return; } const prepTime = toDecimalHours(document.getElementById('prep-time').value); const postTime = toDecimalHours(document.getElementById('post-time').value); const designTime = toDecimalHours(document.getElementById('design-time').value); const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0; const electricityPrice = parseFloat(document.getElementById('electricity-price').value) || 0; const failureRate = parseFloat(document.getElementById('failure-rate').value) || 0; const depreciationCost = (printer.price / printer.hours) * printTime; const electricityCost = printer.power * printTime * electricityPrice; const laborCost = (prepTime + postTime + designTime) * hourlyRate; const subtotal = depreciationCost + electricityCost + totalFilamentCost + laborCost; const failureCost = subtotal * (failureRate / 100); const totalCost = subtotal + failureCost; document.getElementById('depreciation').textContent = depreciationCost.toFixed(2); document.getElementById('electricity').textContent = electricityCost.toFixed(2); document.getElementById('filament-cost').textContent = totalFilamentCost.toFixed(2); document.getElementById('labor').textContent = laborCost.toFixed(2); document.getElementById('failure').textContent = failureCost.toFixed(2); document.getElementById('total').textContent = totalCost.toFixed(2); document.getElementById('result').classList.remove('hidden'); });
   document.getElementById('save-data-btn').addEventListener('click', () => { const data = { printers, filaments, models, hourlyRates, electricityPrices }; const dataStr = JSON.stringify(data, null, 2); const blob = new Blob([dataStr], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `3D_Print_Master_Data_${new Date().toISOString().slice(0, 10)}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); burgerMenu.classList.remove('open'); });
   document.getElementById('load-data-input').addEventListener('change', (event) => { const file = event.target.files[0]; if (!file) return; const t = translations[currentLanguage]; const confirmLoad = window.confirm(t.confirm_load_data); if (!confirmLoad) { event.target.value = ''; return; } const reader = new FileReader(); reader.onload = (e) => { try { const loadedData = JSON.parse(e.target.result); if (loadedData.filaments && Array.isArray(loadedData.filaments)) { loadedData.filaments.forEach(f => { if (f.metallic && typeof f.effect === 'undefined') { if (f.metallic === 'gold') f.effect = 'metallic_gold'; else if (f.metallic === 'silver') f.effect = 'metallic_silver'; else f.effect = 'none'; delete f.metallic; } }); } if (!loadedData.printers || !Array.isArray(loadedData.printers) || !loadedData.filaments || !Array.isArray(loadedData.filaments) || !loadedData.models || !Array.isArray(loadedData.models) || !loadedData.hourlyRates || !Array.isArray(loadedData.hourlyRates) || !loadedData.electricityPrices || !Array.isArray(loadedData.electricityPrices)) { throw new Error(t.alert_load_data_invalid_format); } printers = loadedData.printers; filaments = loadedData.filaments; models = loadedData.models; hourlyRates = loadedData.hourlyRates; electricityPrices = loadedData.electricityPrices; localStorage.setItem('printers', JSON.stringify(printers)); localStorage.setItem('filaments', JSON.stringify(filaments)); localStorage.setItem('models', JSON.stringify(models)); localStorage.setItem('hourlyRates', JSON.stringify(hourlyRates)); localStorage.setItem('electricityPrices', JSON.stringify(electricityPrices)); updateAllLists(); burgerMenu.classList.remove('open'); event.target.value = ''; alert(t.alert_load_data_success); } catch (error) { console.error('Fehler beim Laden der Datei:', error); alert(t.alert_load_data_error + error.message); } }; reader.onerror = () => alert(t.alert_read_file_error); reader.readAsText(file); });
+  
   const languageSelect = document.getElementById('language-select');
   languageSelect.addEventListener('change', (e) => setLanguage(e.target.value));
   const savedLang = localStorage.getItem('userLanguage') || navigator.language.split('-')[0];
   const initialLang = translations[savedLang] ? savedLang : 'de';
   languageSelect.value = initialLang;
   setLanguage(initialLang);
-  createSearchableSelect(document.getElementById('model'));
-  createSearchableSelect(document.getElementById('printer'));
-  createSearchableSelect(document.getElementById('filament'));
-  updateModelFilaments();
-  const newFilamentColorInput = document.getElementById('filament-color');
-  const newFilamentColorHexInput = document.getElementById('filament-color-hex');
-  const newFilamentColorPreview = document.getElementById('new-filament-color-preview');
-  newFilamentColorInput.addEventListener('input', (e) => { const newColor = e.target.value; newFilamentColorHexInput.value = newColor.toUpperCase(); newFilamentColorPreview.style.backgroundColor = newColor; });
-  newFilamentColorHexInput.addEventListener('input', (e) => { const newHex = e.target.value; if (/^#[0-9a-fA-F]{6}$/.test(newHex)) { newFilamentColorInput.value = newHex; newFilamentColorPreview.style.backgroundColor = newHex; } });
-  newFilamentColorHexInput.value = newFilamentColorInput.value.toUpperCase();
+
+  // Führe diesen Initialisierungscode nur aus, wenn wir auf der Hauptseite sind.
+  if (document.getElementById('calc-form')) {
+    createSearchableSelect(document.getElementById('model'));
+    createSearchableSelect(document.getElementById('printer'));
+    createSearchableSelect(document.getElementById('filament'));
+    updateModelFilaments();
+  }
+
+  // Führe diesen Initialisierungscode nur aus, wenn wir auf der Filament-Seite sind.
+  if (document.getElementById('filament-form')) {
+    const newFilamentColorInput = document.getElementById('filament-color');
+    const newFilamentColorHexInput = document.getElementById('filament-color-hex');
+    const newFilamentColorPreview = document.getElementById('new-filament-color-preview');
+    newFilamentColorInput.addEventListener('input', (e) => { const newColor = e.target.value; newFilamentColorHexInput.value = newColor.toUpperCase(); newFilamentColorPreview.style.backgroundColor = newColor; });
+    newFilamentColorHexInput.addEventListener('input', (e) => { const newHex = e.target.value; if (/^#[0-9a-fA-F]{6}$/.test(newHex)) { newFilamentColorInput.value = newHex; newFilamentColorPreview.style.backgroundColor = newHex; } });
+    newFilamentColorHexInput.value = newFilamentColorInput.value.toUpperCase();
+  }
 });
