@@ -2,10 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Version History - 3D-Print Master</title> <script src="https://cdn.tailwindcss.com"></script> <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
-  <style>:root { --text-color-light: #333; --bg-color-light: #f9fafb; --container-bg-light: #ffffff; } [data-theme="dark"] { --text-color-dark: #e5e7eb; --bg-color-dark: #111827; --container-bg-dark: #1f2937; } body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .dark-mode-text { color: var(--text-color-dark); } .light-mode-text { color: var(--text-color-light); } [data-theme="dark"] body { background-color: var(--bg-color-dark); color: var(--text-color-dark); } [data-theme="light"] body { background-color: var(--bg-color-light); color: var(--text-color-light); } [data-theme="dark"] .content-container { background-color: var(--container-bg-dark); } [data-theme="light"] .content-container { background-color: var(--container-bg-light); }</style>
+  <style>
+    :root { --text-color-light: #333; --bg-color-light: #f9fafb; --container-bg-light: #ffffff; } [data-theme="dark"] { --text-color-dark: #e5e7eb; --bg-color-dark: #111827; --container-bg-dark: #1f2937; } body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .dark-mode-text { color: var(--text-color-dark); } .light-mode-text { color: var(--text-color-light); } [data-theme="dark"] body { background-color: var(--bg-color-dark); color: var(--text-color-dark); } [data-theme="light"] body { background-color: var(--bg-color-light); color: var(--text-color-light); } [data-theme="dark"] .content-container { background-color: var(--container-bg-dark); } [data-theme="light"] .content-container { background-color: var(--container-bg-light); }
+    .footer { margin-top: auto; padding: 1rem; text-align: center; font-size: 0.875rem; color: #6b7280; }
+    [data-theme="dark"] .footer { color: #9ca3af; }
+    [data-theme="dark"] .footer a { color: #93c5fd; }
+  </style>
 </head>
-<body>
-  <div class="max-w-4xl mx-auto p-4">
+<!-- HIER IST DIE KORREKTUR -->
+<body class="flex flex-col min-h-screen">
+  <!-- Der Hauptinhalt der Seite -->
+  <div class="max-w-4xl mx-auto p-4 w-full">
     <div class="flex items-center justify-between mb-6"> <div class="flex items-center justify-start"> <img src="3D_Print_Master_Logo.png" alt="Logo" class="w-12 h-12 mr-4"> <h1 class="text-2xl font-bold">Version History</h1> </div> </div>
     <div class="content-container p-6 rounded-lg shadow-md">
       <table class="w-full text-left">
@@ -19,9 +26,9 @@
         <tbody>
           <!-- ADD NEW ENTRIES HERE AT THE TOP -->
           <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.20</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Repair calculation for multicolor models.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.19</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Repair calculation for multicolor models.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.18</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementation version history, position in the burger menu.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.17</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implemented screenshots in the English manual.</td></tr>
+		      <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.19</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Fixed broken links to subpages.</td></tr>
+		      <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.18</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementation version history, position in the burger menu.</td></tr>
+		      <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.17</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implemented screenshots in the English manual.</td></tr>
           <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.16</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implemented screenshots in the German manual.</td></tr>
           <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.15</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implemented the translated manual page using an HTML template.</td></tr>
           <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.14</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implemented the translated "Spend a Coffee" page using an HTML template.</td></tr>
@@ -41,6 +48,12 @@
       <a href="index.html" class="inline-block mt-8 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"> ← Back to Calculator </a>
     </div>
   </div>
+	
+	<!-- Footer -->
+	<footer id="app-footer" class="footer"> 
+    <a href="imprintEN.html" class="hover:underline">Imprint</a>
+  </footer>
+  
   <script>(() => { const theme = localStorage.getItem('theme') || 'system'; if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })();</script>
 </body>
 </html>

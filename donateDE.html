@@ -8,10 +8,14 @@
     .coffee-link:hover .coffee-img { transform: scale(1.05); }
     .steam { position: absolute; top: -60px; left: 50%; width: 80px; height: 140px; background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, transparent 80%); opacity: 0; transform: translateX(-50%) scaleY(0.5); animation: steam-rise 3s ease-out infinite; pointer-events: none; }
     @keyframes steam-rise { 0% { transform: translateX(-50%) translateY(0) scaleY(0.5); opacity: 0; } 30% { opacity: 0.4; } 60% { opacity: 0.2; } 100% { transform: translateX(-50%) translateY(-40px) scaleY(1); opacity: 0; } }
+    /* CSS für den Footer */
+    .footer { margin-top: auto; padding: 1rem; text-align: center; font-size: 0.875rem; color: #6b7280; }
+    [data-theme="dark"] .footer { color: #9ca3af; }
+    [data-theme="dark"] .footer a { color: #93c5fd; }
   </style>
 </head>
-<body>
-  <div class="max-w-4xl mx-auto p-4">
+<body class="flex flex-col min-h-screen">
+  <div class="max-w-4xl mx-auto p-4 w-full">
     <div class="flex items-center justify-between mb-6"> <div class="flex items-center justify-start"> <img src="3D_Print_Master_Logo.png" alt="Logo" class="w-12 h-12 mr-4"> <h1 class="text-2xl font-bold">Spend a Coffee!</h1> </div> </div>
     <div class="content-container p-6 rounded-lg shadow-md text-center">
       <p class="text-lg leading-relaxed">Vielen Dank, dass du den 3D-Print Master nutzt! <br> Der erste Druckkosten-Rechner mit Multicolor-Unterstützung, ganz ohne AMS 😄<br> Deine Unterstützung hilft mir, das Projekt weiterzuentwickeln, neue Funktionen hinzuzufügen und die Kosten zu decken.<br> Ein virtueller Kaffee wäre also wirklich großartig!</p>
@@ -33,6 +37,11 @@
       <a href="index.html" class="inline-block mt-8 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"> ← Zurück zum Rechner </a>
     </div>
   </div>
+
+  <footer id="app-footer" class="footer">
+      <a href="imprintDE.html" class="hover:underline">Impressum</a>
+  </footer>
+
   <script>(() => { const theme = localStorage.getItem('theme') || 'system'; if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.setAttribute('data-theme', 'light'); } })();</script>
 </body>
 </html>
