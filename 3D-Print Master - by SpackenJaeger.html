@@ -84,6 +84,7 @@
                   <option value="system" data-translate="theme_system">System</option>
                </select>
                <button id="save-data-btn" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full mb-2" data-translate="save_data_button">Daten speichern</button> <label class="block font-semibold mb-2" data-translate="load_data_label">Daten laden</label> <input type="file" id="load-data-input" accept=".json" class="border p-2 w-full rounded" />
+               <!-- KORRIGIERTES BURGER-MENÜ OHNE ONCLICK FÜR EXTERNE SEITEN -->
                <nav class="mt-4">
                   <ul class="space-y-2">
                      <li><a href="#calculator" class="block hover:underline" onclick="showPage('calculator', event)" data-translate="nav_calculator">Kostenrechner</a></li>
@@ -100,6 +101,7 @@
                </nav>
             </div>
          </div>
+         <!-- KORRIGIERTE HAUPTNAVIGATION - NUR INTERNE LINKS -->
          <nav class="bg-gray-800 text-white p-4 rounded mb-4">
             <ul class="flex space-x-4">
                <li><a href="#calculator" class="font-bold hover:underline" onclick="showPage('calculator', event)" data-translate="nav_calculator">Kostenrechner</a></li>
@@ -113,8 +115,6 @@
                <li><a href="#hourly-rates" class="hover:underline" onclick="showPage('hourly-rates', event)" data-translate="nav_hourly_rates">Stundensätze</a></li>
                <li class="text-gray-400">|</li>
                <li><a href="#electricity-prices" class="hover:underline" onclick="showPage('electricity-prices', event)" data-translate="nav_electricity_prices">Stromkosten</a></li>
-               <li class="text-gray-400">|</li>
-               <li><a href="donateDE.html" data-translate-href="nav_donate_link">Spend a Coffee</a></li>
             </ul>
          </nav>
          <div id="time-picker-modal" class="time-picker-modal">
