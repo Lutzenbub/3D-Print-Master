@@ -100,6 +100,7 @@
                </nav>
             </div>
          </div>
+         <!-- KORRIGIERTE HAUPTNAVIGATION -->
          <nav class="bg-gray-800 text-white p-4 rounded mb-4">
             <ul class="flex space-x-4">
                <li><a href="#calculator" class="font-bold hover:underline" onclick="showPage('calculator', event)" data-translate="nav_calculator">Kostenrechner</a></li>
@@ -114,7 +115,14 @@
                <li class="text-gray-400">|</li>
                <li><a href="#electricity-prices" class="hover:underline" onclick="showPage('electricity-prices', event)" data-translate="nav_electricity_prices">Stromkosten</a></li>
                <li class="text-gray-400">|</li>
-               <li><a href="donateDE.html" data-translate-href="nav_donate_link">Spend a Coffee</a></li>
+               <!-- HINZUGEFÜGT: Die fehlenden Links -->
+               <li><a href="anleitungDE.html" class="hover:underline" data-translate-href="nav_manual_link" data-translate="nav_manual">Anleitung</a></li>
+               <li class="text-gray-400">|</li>
+               <li><a href="imprintDE.html" class="hover:underline" data-translate-href="nav_imprint_link" data-translate="nav_imprint">Impressum</a></li>
+               <li class="text-gray-400">|</li>
+               <li><a href="historyDE.html" class="hover:underline" data-translate-href="nav_history_link" data-translate="nav_history">Versionsverlauf</a></li>
+               <li class="text-gray-400">|</li>
+               <li><a href="donateDE.html" data-translate-href="nav_donate_link" class="hover:underline">Spend a Coffee</a></li>
             </ul>
          </nav>
          <div id="time-picker-modal" class="time-picker-modal">
