@@ -8,6 +8,37 @@
       <!-- Favicon -->
       <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
       <style>
+		/* CSS für das Hintergrund-Wallpaper */
+        body::before {
+          content: '';
+          position: fixed; /* Bleibt beim Scrollen an Ort und Stelle */
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          z-index: -1; /* Legt das Element HINTER den Seiteninhalt */
+
+          /* Das Hintergrundbild laden und anpassen */
+          background-image: url('wallpaper.jpg'); /* ÄNDERN SIE HIER DEN DATEINAMEN! */
+          background-size: cover; /* Füllt den Bildschirm ohne Verzerrung */
+          background-position: center center;
+          background-repeat: no-repeat;
+        }
+
+        /* Overlay für den Light Mode (macht das Bild dunkler und gibt ihm einen leichten Blaustich) */
+        [data-theme="light"] body::before,
+        [data-theme="system"] body::before {
+        background-color: rgba(245, 248, 255, 0.5); 
+        background-blend-mode: screen; /* Mischt die Farbe mit dem Bild */
+        }
+        
+        /* 3. Overlay für den DARK MODE (dunkelt das Bild ab) */
+        [data-theme="dark"] body::before {
+        background-color: rgba(17, 24, 39, 0.0); 
+  
+		/* 'screen' hellt die dunklen Bereiche des Wallpapers auf */
+		background-blend-mode: screen; 
+		}
          .time-picker-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; z-index: 1000; }
          .time-picker-content { background: white; padding: 20px; border-radius: 8px; width: 300px; text-align: center; }
          .burger-menu { display: none; position: absolute; top: 50px; left: 10px; background: white; border: 1px solid #ccc; border-radius: 4px; padding: 10px; z-index: 1000; }
@@ -24,11 +55,11 @@
          .searchable-select-options li { padding: 0.5rem; }
          .searchable-select-options li:hover, .searchable-select-options li.highlighted { background-color: #e0e0e0; }
          .searchable-select-options li.hidden { display: none; }
-		 .footer {margin-top: auto; /* Drückt den Footer nach unten */padding: 1rem;text-align: center;font-size: 0.875rem;color: #6b7280;}[data-theme="dark"] .footer {color: #9ca3af;}[data-theme="dark"] .footer a {color: #93c5fd;}
+		 .footer {margin-top: auto; padding: 1rem; text-align: center; font-size: 0.875rem; color: #374151;} .footer a {color: #1d4ed8; text-decoration: underline;} [data-theme="dark"] .footer {color: #9ca3af;} [data-theme="dark"] .footer a {color: #93c5fd;}
          [data-theme="dark"] { background-color: #1f2937; color: #e5e7eb; }
          [data-theme="dark"] .bg-white { background-color: #374151; }
          [data-theme="dark"] .text-black { color: #e5e7eb; }
-         [data-theme="dark"] .bg-gray-100 { background-color: #111827; }
+         [data-theme="dark"] .bg-gray-100 { background-color: transparent; }
          [data-theme="dark"] .bg-gray-200 { background-color: #4b5563; }
          [data-theme="dark"] .bg-gray-800 { background-color: #1f2937; }
          [data-theme="dark"] .border, [data-theme="dark"] .border-gray-300 { border-color: #6b7280; }
@@ -58,7 +89,7 @@
          [data-theme="dark"] .searchable-select-options li.highlighted { background-color: #4b5563; }
       </style>
    </head>
-   <body class="bg-gray-100">
+   <body class="bg-gray-100 relative">
       <div id="app" class="max-w-4xl mx-auto p-4">
          <div class="flex items-center justify-between mb-4">
             <div class="flex items-center justify-start">
