@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Versionsverlauf - 3D-Print Master</title> <script src="https://cdn.tailwindcss.com"></script> <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
+  <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Versionsverlauf - Costify3D</title> <script src="https://cdn.tailwindcss.com"></script> <link rel="icon" href="3D_Print_Master_Icon.ico" type="image/x-icon">
   <style>
     :root { --text-color-light: #333; --bg-color-light: #f9fafb; --container-bg-light: #ffffff; } [data-theme="dark"] { --text-color-dark: #e5e7eb; --bg-color-dark: #111827; --container-bg-dark: #1f2937; } body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .dark-mode-text { color: var(--text-color-dark); } .light-mode-text { color: var(--text-color-light); } [data-theme="dark"] body { background-color: var(--bg-color-dark); color: var(--text-color-dark); } [data-theme="light"] body { background-color: var(--bg-color-light); color: var(--text-color-light); } [data-theme="dark"] .content-container { background-color: var(--container-bg-dark); } [data-theme="light"] .content-container { background-color: var(--container-bg-light); }
     /* CSS für den Footer */
@@ -12,7 +12,10 @@
 </head>
 <body class="flex flex-col min-h-screen">
   <div class="max-w-4xl mx-auto p-4 w-full">
-    <div class="flex items-center justify-between mb-6"> <div class="flex items-center justify-start"> <img src="3D_Print_Master_Logo.png" alt="Logo" class="w-12 h-12 mr-4"> <h1 class="text-2xl font-bold">Versionsverlauf</h1> </div> </div>
+    <div class="flex items-center justify-between mb-6"> 
+	<div class="flex items-center justify-start"> 
+	<img src="3D_Print_Master_Logo.png" alt="Logo" class="w-12 h-12 mr-4"> 
+	<h1 class="text-2xl font-bold">Versionsverlauf</h1> </div> </div>
     <div class="content-container p-6 rounded-lg shadow-md">
       <table class="w-full text-left">
         <thead class="border-b-2 dark:border-gray-600">
@@ -24,25 +27,27 @@
         </thead>
         <tbody>
           <!-- HIER NEUE EINTRÄGE IMMER OBEN HINZUFÜGEN -->
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.21</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung Impressum auf unterseiten.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.20</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Fix Unterseiten Impressum und Anleitung durch Anpassung an script.js.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.19</td><td class="p-2 align-top">24.05.2024</td><td class="p-2"><b>FINAL:</b> Reparatur Kalulation bei Multicolor Modellen.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.18</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung Versionsverlauf, Position im Burger-Menü.</td></tr>
-		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.17</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der englischen Anleitung.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.16</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der deutschen Anleitung.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.15</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Anleitungs-Seite mittels HTML-Vorlage.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.14</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten "Spend a Coffee"-Seite mittels HTML-Vorlage.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.13</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Impressum-Seite mittels HTML-Vorlage.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.12</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Anpassung der Zeiteingabe & Wiederherstellung der Multicolor-Berechnung.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.11</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Anpassung der Angabe von Zeiten auf ein modernes Eingabefeld.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.10</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Erweiterung der Farbauswahl um direkte HEX-Code-Eingabe.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.09</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Korrektur der Farbvorschau beim Anlegen neuer Filamente.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.08</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Implementierung sprachabhängiger Währungssymbole (€/$) in der gesamten Anwendung.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.07</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Umstellung von "Metallic" auf "Effekte" mit neuen Optionen & Fehlerbehebung.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.06</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Erweiterung der Filamente um "Material" und Anzeige aller Details in den Dropdowns.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.05</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Suchfunktion für dynamisch erstellte Filament-Felder implementiert.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.04</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>START:</b> Suchfunktion in den Dropdowns für Modell, Drucker und Filament integriert.</td></tr>
-          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.03</td><td class="p-2 align-top">2024-05-24</td><td class="p-2"><b>FINAL:</b> Wiederherstellung der Berechnungsfunktion nach Modellauswahl.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.23</td><td class="p-2 align-top">14.06.2025</td><td class="p-2"><b>FINAL:</b> Einfügen Copyrights in Fußzeile.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.22</td><td class="p-2 align-top">14.06.2025</td><td class="p-2"><b>FINAL:</b> Anpassung mobile Ansicht, ausblenden Ribbon Leiste.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.21</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung Impressum auf unterseiten.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.20</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Fix Unterseiten Impressum und Anleitung durch Anpassung an script.js.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.19</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Reparatur Kalulation bei Multicolor Modellen.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.18</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung Versionsverlauf, Position im Burger-Menü.</td></tr>
+		  <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.17</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der englischen Anleitung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.16</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung der Screenshots in der deutschen Anleitung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.15</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Anleitungs-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.14</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten "Spend a Coffee"-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.13</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung der übersetzten Impressum-Seite mittels HTML-Vorlage.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.12</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Anpassung der Zeiteingabe & Wiederherstellung der Multicolor-Berechnung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.11</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Anpassung der Angabe von Zeiten auf ein modernes Eingabefeld.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.10</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Erweiterung der Farbauswahl um direkte HEX-Code-Eingabe.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.09</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Korrektur der Farbvorschau beim Anlegen neuer Filamente.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.08</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Implementierung sprachabhängiger Währungssymbole (€/$) in der gesamten Anwendung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.07</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Umstellung von "Metallic" auf "Effekte" mit neuen Optionen & Fehlerbehebung.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.06</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Erweiterung der Filamente um "Material" und Anzeige aller Details in den Dropdowns.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.05</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Suchfunktion für dynamisch erstellte Filament-Felder implementiert.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.04</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>START:</b> Suchfunktion in den Dropdowns für Modell, Drucker und Filament integriert.</td></tr>
+          <tr class="border-b dark:border-gray-700"><td class="p-2 align-top">v1.0.03</td><td class="p-2 align-top">07.06.2025</td><td class="p-2"><b>FINAL:</b> Wiederherstellung der Berechnungsfunktion nach Modellauswahl.</td></tr>
         </tbody>
       </table>
       <a href="index.html" class="inline-block mt-8 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"> ← Zurück zum Rechner </a>

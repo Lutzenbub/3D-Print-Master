@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const translations = {
     de: {
+	  copyright_text: "Alle Rechte vorbehalten.",
       currency_symbol: '€', page_title: "3D-Print Master - by SpackenJaeger", option_select: "Wählen...", button_add: "Hinzufügen", button_save: "Speichern", button_edit: "Bearbeiten", button_delete: "Löschen", button_calculate: "Berechnen", button_reset: "Zurücksetzen", ok_button: "OK", cancel_button: "Abbrechen", theme_label: "Design", theme_light: "Hell", theme_dark: "Dunkel", theme_system: "System", save_data_button: "Daten speichern", load_data_label: "Daten laden", nav_calculator: "Kostenrechner", nav_printers: "Drucker", nav_printers_long: "3D Drucker", nav_filaments: "Filamente", nav_models: "Modelle", nav_hourly_rates: "Stundensätze", nav_electricity_prices: "Stromkosten",
       nav_manual: "Anleitung", nav_imprint: "Impressum", nav_history: "Versionsverlauf", nav_manual_link: "anleitungDE.html", nav_imprint_link: "imprintDE.html", nav_donate_link: "donateDE.html", nav_history_link: "historyDE.html",
       time_picker_title: "Zeit eingeben", time_picker_hours: "Stunden", time_picker_minutes: "Minuten", alert_invalid_duration: "Bitte geben Sie eine gültige Zeit an (Stunden: 0-999, Minuten: 0-59).", page_title_calculator: "Kostenrechner", label_model_optional: "3D-Modell (optional)", option_no_model: "Kein Modell auswählen", label_printer: "Drucker", label_filament: "Filament", label_print_time: "Druckzeit", label_filament_usage: "Filamentverbrauch (Gramm)", label_prep_time: "Vorbereitungszeit", label_post_time: "Nachbereitungszeit", label_design_time: "Modellerstellungszeit pro Einheit",
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
       list_item_model_print: "Druck", list_item_model_filament: "Filament", list_item_model_prep: "Vorb.", list_item_model_post: "Nachb.", list_item_model_design: "Design", list_item_model_unit: "Einheit", list_item_model_sales: "Verkäufe",
     },
     en: {
+	  copyright_text: "All rights reserved.",
       currency_symbol: '$', page_title: "3D-Print Master - by SpackenJaeger", option_select: "Select...", button_add: "Add", button_save: "Save", button_edit: "Edit", button_delete: "Delete", button_calculate: "Calculate", button_reset: "Reset", ok_button: "OK", cancel_button: "Cancel", theme_label: "Design", theme_light: "Light", theme_dark: "Dark", theme_system: "System", save_data_button: "Save Data", load_data_label: "Load Data", nav_calculator: "Calculator", nav_printers: "Printers", nav_printers_long: "3D Printers", nav_filaments: "Filaments", nav_models: "Models", nav_hourly_rates: "Hourly Rates", nav_electricity_prices: "Electricity Costs",
       nav_manual: "Manual", nav_imprint: "Imprint", nav_history: "Version History", nav_manual_link: "anleitungEN.html", nav_imprint_link: "imprintEN.html", nav_donate_link: "donateEN.html", nav_history_link: "historyEN.html",
       time_picker_title: "Enter duration", time_picker_hours: "Hours", time_picker_minutes: "Minutes", alert_invalid_duration: "Please enter a valid duration (Hours: 0-999, Minutes: 0-59).",
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       list_item_filament_properties: { matte: 'Matte', glossy: 'Glossy' },
       list_item_filament_effects: { carbon: 'Carbon Fiber', gitd: 'Glow in the Dark', wood: 'Wood', metal: 'Metal', metallic_copper: 'Copper', metallic_gold: 'Gold', metallic_silver: 'Silver', multicolor: 'Multicolor' },
       list_item_model_print: "Print", list_item_model_filament: "Filament", list_item_model_prep: "Prep", list_item_model_post: "Post", list_item_model_design: "Design", list_item_model_unit: "unit", list_item_model_sales: "Sales",
+	  copyright_text: "All rights reserved."
     }
   };
 
@@ -122,4 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
     newFilamentColorHexInput.addEventListener('input', (e) => { const newHex = e.target.value; if (/^#[0-9a-fA-F]{6}$/.test(newHex)) { newFilamentColorInput.value = newHex; newFilamentColorPreview.style.backgroundColor = newHex; } });
     newFilamentColorHexInput.value = newFilamentColorInput.value.toUpperCase();
   }
+  // --- DYNAMISCHES COPYRIGHT-JAHR ---
+  const yearSpan = document.getElementById('copyright-year');
+  if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+  }
+  
+  
 });
